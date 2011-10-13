@@ -16,13 +16,32 @@ class BaseHandler(tornado.web.RequestHandler):
     #def get_current_user(self):
         #user = json_decode(self.get_secure_cookie('user'))
         #return user
-    
+        
     def json_content(self):
         self.set_header('Content-Type', 'application/json')
 
 class PageHandler(tornado.web.RequestHandler):
     def get(self):
         self.render('index.html')
+
+class DashboardApiHandler(BaseHandler):
+    
+    def get(self, url):
+        if url == 'friends':
+            self.twitter_request("/followers/ids", 
+                access_token= user["access_token"],
+                callback= self.async_callback(self._on_followers))
+        if url == 'comments':
+            pass
+
+    def _on_friends(self):
+        
+        pass
+
+    def _on_comments(self):
+        pass
+
+
 
 class OrganizeADojoHandler(BaseHandler):
     
@@ -75,7 +94,7 @@ class DashBoardHandler(BaseHandler, tornado.auth.TwitterMixin):
         self.twitter_request("/followers/ids",
             access_token= user["access_token"],
             callback= self.async_callback(self._on_followers))
-
+    
     def _on_followers(self, followers):
         print(followers)
         self.finish("aaa")
@@ -110,6 +129,8 @@ class DojoTo(tornado.web.Application):
             (r"/", PageHandler),
             #(r"/learn/", PageHandler),
             (r"/login/twitter", TwitterHandler),
+            (r"/api/dojo/([0-9]*)",OrganizeADojoHandler),
+            (r"/api/dojo/([0-9]/join)", OrganizeADojoHandler),
             (r"/dashboard", DashBoardHandler),
 
         ]
@@ -129,7 +150,7 @@ class DojoTo(tornado.web.Application):
 
 if __name__ == "__main__":
     tornado.options.parse_command_line()
-    tornado.options.parse_config_file("/Users/gutomaia/dojo_to.conf")
+    tornado.options.parse_config_file(os.getenv("HOME") + "/dojo_to.conf")
     DojoTo(options).listen(8888)
 
     try:

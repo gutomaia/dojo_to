@@ -1,43 +1,86 @@
 # -*- coding: utf-8 -*-
 
 import unittest, os, os.path, sys, urllib
+from subprocess import call
+from urllib import urlencode
+
+
 from tornado.testing import AsyncHTTPTestCase, main
 from tornado.web import Application
 from tornado.options import parse_config_file, parse_command_line, options
 from dojo_to import DojoTo
-import tornado.database
+from tornado import database
 
-APP_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-
+APP_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '.'))
 sys.path.append(os.path.join(APP_ROOT, '.'))
 
-def clear_db(app=None):
-    #os.system("mysql %s < %s" % (options.mysql_database, os.path.join(APP_ROOT, 'db', 'schema.sql')))
-    pass
+parse_config_file(os.getenv("HOME") + "/dojo_to.conf")
+
+
+def mysql_run(file):
+    try:
+        retcode = call("mysql %s < %s" % ("dojo_to", os.path.join(APP_ROOT, 'sql', file)), shell=True)
+        if retcode != 0:
+            print >>sys.stderr, "Child was terminated by signal a", -retcode
+            raise Exception("Mysql problem on: "+file)
+    except OSError, e:
+        print >>sys.stderr, "Execution failed:", e
+
+def init_db(app=None):
+    mysql_run('create_schema.sql')
+    mysql_run('test_data.sql')
+
+def drop_db(app=None):
+    mysql_run('drop_schema.sql')
+
 
 class DojoToTest(AsyncHTTPTestCase):
 
     def setUp(self):
-        clear_db()
+        drop_db()
+        init_db()
         super(DojoToTest, self).setUp()
 
     def get_app(self):
-        parse_config_file("/Users/gutomaia/dojo_to.conf")
         return DojoTo(options)
 
     def test_db(self):
         db = database.Connection("localhost", "dojo_to")
-        for users in db.query("SELECT * FROM users"):
-            print users.title
+        users = db.execute_rowcount("SELECT * FROM users")
+        self.assertEquals(1, users);
+        dojos = db.execute_rowcount("SELECT * FROM dojos")
+        self.assertEquals(1, dojos);
 
+        #for users in db.query("SELECT * FROM users"):
+        #    print users.username
+        #db.execute("INSERT INTO users (username) values(%s)", "guto maia")
+        #self.assertTrue(False)
 
     def test_homepage(self):
-        #self.http_client.fetch(self.get_url('/'), self.stop)
-        #response = self.wait()
         response = self.fetch('/')
         self.assertEquals(200, response.code)
         #self.assertRegexpMatches(response.body,r'.*Hello.*')
 
+    def test_form(self):
+        form = dict(
+            local = "gUTO.nET HeadQuarers",            
+        )
+        body = urlencode(form)
+        headers = {'Content-Type': 'application/x-www-form-urlencoded'}
+                
+
+        pass
+
+    def test_onlogin(self):
+        pass
+
+    def test_create_a_new_dojo(self):
+
+        pass
+
+    def test_on_user_enlist(self):
+
+        pass
     '''        
     def test_userpage(self):
         response = self.fetch('/guto')
