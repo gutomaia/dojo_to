@@ -1,8 +1,17 @@
-<html>
-  <head>
-    <title></title>
-  </head>
-  <body>
-    <h1></h1>
-  </body>
-</html>
+{% extends "base.html" %}
+{% block content %}
+<noscript>Your browser does not support JavaScript!</noscript>
+<div class="row">
+	<div class="column grid_12">
+		<div id="coin-slider">
+			<ul>
+			{% for dojo in dojos %}
+				<li>
+					<a href="">{{ dojo.username }}</a> will trainnin in a <a href="/learn/{{dojo.language}}">{{ dojo.language }}</a> dojo at dojo.location in <a>dojo.city</a>
+				</li>
+			{% end %}
+			</ul>
+		</div>
+	</div>
+</div>
+{% end %}

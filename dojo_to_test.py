@@ -1,41 +1,25 @@
 # -*- coding: utf-8 -*-
 
 import unittest, os, os.path, sys, urllib
-from subprocess import call
 from urllib import urlencode
 
-from tornado.testing import AsyncHTTPTestCase, main
+from tornado.testing import AsyncHTTPTestCase
 from tornado.web import Application
 from tornado.options import parse_config_file, parse_command_line, options
 from dojo_to import DojoTo, TwitterHandler
 from tornado import database
+
+from testutils import init_db, drop_db
 
 APP_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '.'))
 sys.path.append(os.path.join(APP_ROOT, '.'))
 
 parse_config_file(os.getenv("HOME") + "/dojo_to.conf")
 
-def mysql_run(file, app=None):
-    try:
-        retcode = call("mysql %s < %s" % ("dojo_to", os.path.join(APP_ROOT, 'sql', file)), shell=True)
-        if retcode != 0:
-            print >>sys.stderr, "Child was terminated by signal a", -retcode
-            raise Exception("Mysql problem on: "+file)
-    except OSError, e:
-        print >>sys.stderr, "Execution failed:", e
-
-def init_db(app=None):
-    mysql_run('create_schema.sql')
-    mysql_run('test_data.sql')
-
-def drop_db(app=None):
-    mysql_run('drop_schema.sql')
-
 class DojoToTest(unittest.TestCase):
 
     def test_twitter_handler_on_auth(self):
  #       th = TwitterHandler();
-
         self.assertTrue(True)
 
 
@@ -106,7 +90,6 @@ class DojoToHttpTest(AsyncHTTPTestCase):
         pass
 
     def test_create_a_new_dojo(self):
-
         pass
 
     def test_on_user_enlist(self):
