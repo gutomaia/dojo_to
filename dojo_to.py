@@ -11,12 +11,12 @@ from tornado.escape import json_encode, json_decode
 from tornado.options import define, options
 
 from tornado import httpclient
+from tornado import database
 
 class BaseHandler(tornado.web.RequestHandler):
-    #def get_current_user(self):
-        #user = json_decode(self.get_secure_cookie('user'))
-        #return user
-        
+    def get_current_user(self):
+        user = json_decode(self.get_secure_cookie('user'))
+        return user        
     def json_content(self):
         self.set_header('Content-Type', 'application/json')
 
@@ -28,12 +28,16 @@ class DashboardApiHandler(BaseHandler):
     
     def get(self, url):
         if url == 'friends':
+            #if user has twitter
             self.twitter_request("/followers/ids", 
                 access_token= user["access_token"],
                 callback= self.async_callback(self._on_followers))
+            #if user has facebook
         if url == 'comments':
+            #self.twitter.r search twitter by dojo_id
             pass
 
+        
     def _on_friends(self):
         
         pass
@@ -41,34 +45,38 @@ class DashboardApiHandler(BaseHandler):
     def _on_comments(self):
         pass
 
+class DojoPageHandler(BaseHandler):
 
+    def get(self, language=None, city=None):
+        self.write(language)
 
-class OrganizeADojoHandler(BaseHandler):
+class DojoApiHandler(BaseHandler):
     
     #@tornado.web.authenticated
     #@tornado.web.asynchronous
-    def post(self): #create
-        #self.json_content()
-        pass 
-    def get(self): #restore
-        #self.json_content()
-        self.write(json_encode(crud.restore()))
-        pass
-    def put (self): #update
-        #self.json_content()
-        pass
-    def delete(self): #delete
-        #self.json_content()
-        pass
+    def post(self, id): #create
+        self.write('post')
+        arg = self.request.arguments
+        user_id = self.get_argument('user_id')
+        local = arg['local']
+        db = database.Connection("localhost", "dojo_to")
+        query = "INSERT INTO dojos (user_id) VALUES (%s)"
+        dojo_id = db.execute_lastrowid(query, user_id)
+        if dojo_id:
+            self.redirect("/dojo/"+ str(dojo_id))
+            #pass
 
-class DojoCrud(object):
-    def create(self):
+        #self.json_content()
+    def get(self, id): #restore
+        self.write('get')
+        #self.json_content()
+        #self.write(json_encode(crud.restore()))
         pass
-    def restore(self):
+    def put (self, id): #update
+        #self.json_content()
         pass
-    def update(self):
-        pass
-    def delete(self):
+    def delete(self, id): #delete
+        #self.json_content()
         pass
 
 '''
@@ -119,18 +127,30 @@ class TwitterHandler(tornado.web.RequestHandler, tornado.auth.TwitterMixin):
     def _on_auth(self, user):
         if not user: raise tornado.web.HTTPError(500, "Twitter auth failed")
         self.set_secure_cookie("username", tornado.escape.json_encode(user))
+        db = database.Connection("localhost", "dojo_to")
+        query = "SELECT * FROM users WHERE twitter_id %i" % user['twitter_id']
+        persistedUser = db.get(query)
+        if persistedUser:
+            pass
+        else:
+            pass
+
         self.redirect("/dashboard")
- 
+
+
+    def _on_register(self, user):
+        db.execute() 
 
 
 class DojoTo(tornado.web.Application):
     def __init__(self, options):
         handlers = [
             (r"/", PageHandler),
-            #(r"/learn/", PageHandler),
+            (r"/learn/([A-Za-z_]+)", DojoPageHandler),
+            (r"/learn/([A-Za-z_]+)/in/([A-Za-z_]+)", DojoPageHandler),
             (r"/login/twitter", TwitterHandler),
-            (r"/api/dojo/([0-9]*)",OrganizeADojoHandler),
-            (r"/api/dojo/([0-9]/join)", OrganizeADojoHandler),
+            (r"/api/dojo/?([0-9]+)?", DojoApiHandler),
+            (r"/api/dojo/([0-9]/join)", DojoApiHandler),
             (r"/dashboard", DashBoardHandler),
 
         ]
