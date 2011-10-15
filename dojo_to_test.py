@@ -34,39 +34,6 @@ class DojoToHttpTest(AsyncHTTPTestCase):
     def get_app(self):
         return DojoTo(options)
 
-    def test_db(self):
-        db = database.Connection("localhost", "dojo_to")
-        users = db.execute_rowcount("SELECT * FROM users")
-        self.assertEquals(3, users);
-        dojos = db.execute_rowcount("SELECT * FROM dojos")
-        self.assertEquals(3, dojos);
-
-        #for users in db.query("SELECT * FROM users"):
-        #    print users.username
-        #db.execute("INSERT INTO users (username) values(%s)", "guto maia")
-        #self.assertTrue(False)
-
-    def test_homepage(self):
-        response = self.fetch('/')
-        self.assertEquals(200, response.code)
-        #self.assertRegexpMatches(response.body,r'.*Hello.*')
-
-    def test_access_dojo_to_learn_python(self):
-        response = self.fetch('/learn/python')
-        self.assertEquals(200, response.code)
-
-    def test_access_dojo_to_learn_java(self):
-        response = self.fetch('/learn/java')
-        self.assertEquals(200, response.code)
-
-    def test_access_dojo_to_learn_php(self):
-        response = self.fetch('/learn/php')
-        self.assertEquals(200, response.code)
-
-    def test_access_dojo_to_learn_python_in_sao_paulo(self):
-        response = self.fetch('/learn/python/in/sao_paulo')
-        self.assertEquals(200, response.code)
-
     def test_create_a_dojo_with_a_simple_post(self):
         form = dict(
             local = "gUTO.nET HeadQuarers",
@@ -96,14 +63,6 @@ class DojoToHttpTest(AsyncHTTPTestCase):
         pass
 
     '''        
-    def test_userpage(self):
-        response = self.fetch('/guto')
-        self.assertEquals(200, response.code)
-
-    def test_template(self):
-        response = self.fetch('/template')
-        self.assertEquals(200, response.code)
-
     def test_template2(self):
         response = self.fetch('/template2')
         self.assertEquals(200, response.code)
