@@ -20,6 +20,12 @@ define("cookie_secret", help="App Cookie Secret")
 
 define("debug", help="App Debug", default=False)
 
+define("database_host", help="Database host", default="localhost")
+define("database_port", help="Database port", default=3306)
+define("database_name", help="Database name", default="dojo_to")
+define("database_username", help="Database username", default="dojo_to")
+define("database_password", help="Database password", default=None)
+
 define("twitter_consumer_key", help="your Twitter application API key")
 define("twitter_consumer_secret", help="your Twitter application secret")
 define("twitter_callback", help="your twitter callback", default=None)
@@ -39,6 +45,7 @@ class BaseHandler(tornado.web.RequestHandler):
 class PageHandler(tornado.web.RequestHandler):
 
     def get(self):
+        print self.settings["database_name"]
         db = database.Connection("localhost", "dojo_to")
         dojos = db.query("SELECT * FROM dojos")
         query = (
@@ -199,7 +206,10 @@ class DojoTo(tornado.web.Application):
             static_path=os.path.join(os.path.dirname(__file__), "static"),
             debug = options.debug,
             cookie_secret = options.cookie_secret,
-            login_url = "/login/twitter"
+            login_url = "/login/twitter",
+            database_host = options.database_host,
+            database_port = options.database_port,
+            database_name = options.database_name,
         )
         tornado.web.Application.__init__(self, handlers, **settings)
 
