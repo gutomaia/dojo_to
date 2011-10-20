@@ -142,7 +142,10 @@ class SocialApiHandler(BaseHandler):
         pass
 
 class LogoutHandler(BaseHandler):
-    pass
+
+    def get(self):
+        self.clear_cookie("user")
+        self.redirect("/")
 
 class TwitterHandler(BaseHandler, tornado.auth.TwitterMixin):
 
@@ -182,6 +185,7 @@ class DojoTo(tornado.web.Application):
             (r"/learn/([A-Za-z_]+)", DojoPageHandler),
             (r"/learn/([A-Za-z_]+)/in/([A-Za-z_]+)", DojoPageHandler),
             (r"/login/twitter", TwitterHandler),
+            (r"/logout", LogoutHandler),
             (r"/api/dojo/?([0-9]+)?", DojoApiHandler),
             (r"/api/dojo/([0-9]/join)", DojoApiHandler),
 
@@ -204,6 +208,7 @@ class DojoTo(tornado.web.Application):
 
 
 if __name__ == "__main__":
+    #logging.info("starting dojo to server") 
     tornado.options.parse_command_line()
     tornado.options.parse_config_file(os.getenv("HOME") + "/.dojo_to.conf")
 
