@@ -3,6 +3,8 @@
 import unittest, os, os.path, sys, urllib
 from urllib import urlencode
 
+from tornado.options import parse_config_file
+
 from testutils import init_db, drop_db
 
 APP_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '.'))
