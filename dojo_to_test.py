@@ -14,15 +14,13 @@ from testutils import init_db, drop_db
 APP_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '.'))
 sys.path.append(os.path.join(APP_ROOT, '.'))
 
-parse_config_file(os.getenv("HOME") + "/dojo_to.conf")
+parse_config_file(os.getenv("HOME") + "/.dojo_to.conf")
 
 class DojoToTest(unittest.TestCase):
 
     def test_twitter_handler_on_auth(self):
  #       th = TwitterHandler();
         self.assertTrue(True)
-
-
 
 class DojoToHttpTest(AsyncHTTPTestCase):
 
@@ -51,6 +49,7 @@ class DojoToHttpTest(AsyncHTTPTestCase):
         form = dict(
             local="gUTO.nET HeadQuarters",
             user_id = 1,
+            test = 0,
         )
 
     def test_onlogin(self):

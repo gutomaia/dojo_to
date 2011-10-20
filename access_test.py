@@ -14,12 +14,10 @@ from testutils import init_db, drop_db
 APP_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '.'))
 sys.path.append(os.path.join(APP_ROOT, '.'))
 
-parse_config_file(os.getenv("HOME") + "/dojo_to.conf")
-
+parse_config_file(os.getenv("HOME") + "/.dojo_to.conf")
 
 drop_db()
 init_db()
-
 
 class AccessTest(AsyncHTTPTestCase):
 
