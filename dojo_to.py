@@ -15,6 +15,7 @@ from tornado import database
 
 from tornado.options import define, options
 
+define("port", help="Application Port", default=8888)
 
 define("cookie_secret", help="App Cookie Secret")
 
@@ -205,7 +206,8 @@ class DojoTo(tornado.web.Application):
 if __name__ == "__main__":
     tornado.options.parse_command_line()
     tornado.options.parse_config_file(os.getenv("HOME") + "/.dojo_to.conf")
-    DojoTo(options).listen(8888)
+
+    DojoTo(options).listen(options.port)
 
     try:
         tornado.ioloop.IOLoop.instance().start()
