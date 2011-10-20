@@ -24,7 +24,7 @@ define("debug", help="App Debug", default=False)
 define("database_host", help="Database host", default="localhost")
 define("database_port", help="Database port", default=3306)
 define("database_name", help="Database name", default="dojo_to")
-define("database_username", help="Database username", default="dojo_to")
+define("database_username", help="Database username", default=None)
 define("database_password", help="Database password", default=None)
 
 define("twitter_consumer_key", help="your Twitter application API key")
@@ -37,15 +37,12 @@ define("github_secret", help="your Github application secret")
 
 class BaseHandler(tornado.web.RequestHandler):
 
-    #def __init__(self, request, **kwargs):
-    #    self.require_setting('cookie_secret')
-    #    self.require_setting('cookie_sec')
-    #super(BaseHandler, self, request **kwargs)
-
     def get_database(self):
         db = database.Connection(
             self.settings['database_host'],
-            self.settings['database_name']
+            self.settings['database_name'],
+            self.settings['database_username'],
+            self.settings['database_password']
         )
         return db
 
@@ -81,7 +78,6 @@ class PageHandler(BaseHandler):
         db.close()
         self.render('index.html', dojos = participants, logged_user = self.current_user)
 
-        
 
 class DojoPageHandler(BaseHandler):
 
@@ -203,6 +199,8 @@ class DojoTo(tornado.web.Application):
             database_host = options.database_host,
             database_port = options.database_port,
             database_name = options.database_name,
+            database_username = options.database_username,
+            database_password = options.database_password,
         )
         tornado.web.Application.__init__(self, handlers, **settings)
 
