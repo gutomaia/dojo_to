@@ -61,21 +61,21 @@ class PageHandler(BaseHandler):
     def get(self):
         db = self.get_database()
         if self.current_user:
-            print 'aaa aads asddasd';
-        #db = self.get_database()
+            #friends = 
+            pass
         dojos = db.query("SELECT * FROM dojos")
         query = (
             "select p.id, u.id, d.id, u.username, u.twitter_display_icon, d.language, d.location, d.city " +
             "from participants as p " +
             "inner join (users as u, dojos as d) " + 
-            "on (p.user_id = u.id and p.dojo_id = d.id) order by p.created_at"
+            "on (p.user_id = u.id and p.dojo_id = d.id) order by p.created_at limit 15"
         )
         participants = db.query(query)
         query = (
             "select d.id, d.language, d.location, d.city"
         )
         db.close()
-        self.render('index.html', dojos = participants, logged_user = self.current_user)
+        self.render('index.html', dojos = dojos, participants = participants, logged_user = self.current_user)
 
 class DojoPageHandler(BaseHandler):
 
@@ -85,35 +85,49 @@ class DojoPageHandler(BaseHandler):
 class CrudDojoHandler(BaseHandler):
 
     @tornado.web.authenticated
-    def get(self, id):
+    def get(self, id = None):
+        if (id):
+            pass
+        self.render('dojo_form.html', dojo=dojo, logged_user = self.current_user)
         pass
-    
-    @tornado.web.authenticated
-    def post(self):
-        arg = self.request.arguments
-        #user_id = self.current_user
-        query = (
-            "INSERT INTO dojos (" +
-            "user_id, language, github_repo, location, address, city, when" +
-            ") VALUES ( %s, %s, %s, %s, %s, %s, %s )"
-        )
-        dojo_id = db.execute_lastrowid(query, user_id)
-
 
 class DojoApiHandler(BaseHandler):
     
     #@tornado.web.authenticated
     #@tornado.web.asynchronous
-    def post(self, id): #create
-        arg = self.request.arguments
-        user_id = self.get_argument('user_id')
-        local = arg['local']
-        db = self.get_database()
-        query = "INSERT INTO dojos (user_id) VALUES (%s)"
-        dojo_id = db.execute_lastrowid(query, user_id)
-        if dojo_id:
+    def post(self, id=None): #create
+        content_type = self.request.headers['Content-Type']
+        if content_type == 'application/x-www-form-urlencoded':
+            dojo = dict (
+                user_id = 1,
+                language = self.get_argument('language'),
+                location = self.get_argument('location'),
+                address = self.get_argument('address'),
+                city = self.get_argument('city')
+            )
+            dojo_id = self.create(dojo)
             self.redirect("/dojo/"+ str(dojo_id))
-            #pass
+        elif content_type == 'application/json':
+            pass
+        #db = self.get_database()
+        #query = "INSERT INTO dojos (user_id, language, location, address, city) values (1, 'python', 'Google', 'a','São Paulo')"
+        #dojo_id = db.execute_lastrowid(query, user_id)
+        #db.close()
+        #if dojo_id:
+        #
+    def create(self, dojo):
+        db = self.get_database()
+        query = (
+            "INSERT INTO dojos ("+
+            "user_id, language, location, address, city"+
+            ") values (%s, %s, %s, %s, %s)"
+        )
+        dojo_id = db.execute_lastrowid(
+            query,
+            dojo['user_id'], dojo['language'], dojo['location'],
+            dojo['address'], dojo['city']
+        )
+        db.close()
 
         #self.json_content()
     def get(self, id): #restore

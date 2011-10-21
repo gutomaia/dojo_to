@@ -34,8 +34,11 @@ class DojoToHttpTest(AsyncHTTPTestCase):
 
     def test_create_a_dojo_with_a_simple_post(self):
         form = dict(
-            local = "gUTO.nET HeadQuarers",
-            user_id = 1,
+            language = "python",
+            location = 'GruPy HeadQuarters',
+            address = 'asdf',
+            city = 'São Paulo',
+            date_hour = 'Sex Out 21 18:40:23 BRST 2011'
         )
         body = urlencode(form)
         headers = {'Content-Type': 'application/x-www-form-urlencoded'}
@@ -52,33 +55,6 @@ class DojoToHttpTest(AsyncHTTPTestCase):
             test = 0,
         )
 
-    def test_onlogin(self):
-        pass
-
-    def test_create_a_new_dojo(self):
-        pass
-
-    def test_on_user_enlist(self):
-        pass
-
-    '''        
-    def test_template2(self):
-        response = self.fetch('/template2')
-        self.assertEquals(200, response.code)
-        self.assertRegexpMatches(response.body,r'.*<title>.*</title>.*')
-
-    def test_json(self):
-        response = self.fetch('/json')
-        self.assertEquals(200, response.code)
-        self.assertTrue(response.headers['Content-Type'] == 'application/json', "Content-Type is not a application/json")
-
-    def test_login(self):
-        #response = self.fetch('/login', follow_redirects=False)
-        #response = self.fetch('/login')
-        #self.assertEquals(302, response.code)
-        #self.assertTrue(response.headers['Location'].endswith('/tutorial'), "response.headers[Location'] did not ends with /tutorial")
-        pass
-    '''
 
 if __name__ == '__main__':
     unittest.main()
