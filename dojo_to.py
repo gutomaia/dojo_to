@@ -150,7 +150,7 @@ class TwitterHandler(BaseHandler, tornado.auth.TwitterMixin):
         if self.get_argument("oauth_token", None):
             self.get_authenticated_user(self.async_callback(self._on_auth))
             return
-        self.authorize_redirect(callback_uri="http://localhost:8888/login/twitter")
+        self.authorize_redirect(callback_uri = self.settings['twitter_callback'])
 
     def _on_auth(self, user):
         if not user: raise tornado.web.HTTPError(500, "Twitter auth failed")
@@ -189,6 +189,7 @@ class DojoTo(tornado.web.Application):
         settings = dict (
             twitter_consumer_key = options.twitter_consumer_key,
             twitter_consumer_secret = options.twitter_consumer_secret,
+            twitter_callback = options.twitter_callback,
             github_client_id = options.github_client_id,
             github_secret = options.github_secret,
             template_path=os.path.join(os.path.dirname(__file__), "templates"),
