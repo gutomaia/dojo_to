@@ -46,7 +46,6 @@ class BaseHandler(tornado.web.RequestHandler):
         )
         return db
 
-
     def get_current_user(self):
         if self.get_cookie('user'): #TODO check for a non-secure-cookie
             print 'user logged'
@@ -78,18 +77,34 @@ class PageHandler(BaseHandler):
         db.close()
         self.render('index.html', dojos = participants, logged_user = self.current_user)
 
-
 class DojoPageHandler(BaseHandler):
 
     def get(self, language=None, city=None):
         self.write(language)
+
+class CrudDojoHandler(BaseHandler):
+
+    @tornado.web.authenticated
+    def get(self, id):
+        pass
+    
+    @tornado.web.authenticated
+    def post(self):
+        arg = self.request.arguments
+        #user_id = self.current_user
+        query = (
+            "INSERT INTO dojos (" +
+            "user_id, language, github_repo, location, address, city, when" +
+            ") VALUES ( %s, %s, %s, %s, %s, %s, %s )"
+        )
+        dojo_id = db.execute_lastrowid(query, user_id)
+
 
 class DojoApiHandler(BaseHandler):
     
     #@tornado.web.authenticated
     #@tornado.web.asynchronous
     def post(self, id): #create
-        self.write('post')
         arg = self.request.arguments
         user_id = self.get_argument('user_id')
         local = arg['local']
@@ -154,24 +169,72 @@ class TwitterHandler(BaseHandler, tornado.auth.TwitterMixin):
 
     def _on_auth(self, user):
         if not user: raise tornado.web.HTTPError(500, "Twitter auth failed")
-        print 'cookie seted'
-        db = self.get_database()
-        query = "SELECT * FROM users WHERE twitter_id = %s or username = %s LIMIT 1"
-        pUser = db.get(query, user['id'], user['username'])
-        if pUser:
-            query = "UPDATE users SET username=%s, twitter_access_token_key=%s, twitter_display_icon=%s where twitter_id=%s"
-            db.execute(query, user['username'], "asdf", user['profile_image_url'], user['id'])
-        else:
-            #IntegrityError
-            query = "INSERT INTO users(username, twitter_id, twitter_access_token_key, twitter_display_icon) VALUES (%s, %s, %s, %s)"
-            db.execute(query, user['username'], user['id'], "asdf", user['profile_image_url'])
-        del user['status']
-        del user['access_token']
-        self.set_secure_cookie('user', json_encode(user))    
+        logged_user = self.register(user)
+        query = ("INSERT INTO twitterlogins ("
+            "user_id, username, twitter_id," +
+            "protected, following, " +
+            "friends_count, " + "followers_count, " +
+            "favourites_count, listed_count, status_count, " + 
+            "geo_enabled, location, coordinates, " +
+            "time_zone, lang"+
+            ") VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+        )
+        
+        #del user['status']
+        #del user['access_token']
+        self.set_secure_cookie('user', json_encode(logged_user))    
         self.redirect("/")
 
-    def _on_register(self, user):
-        db.execute() 
+    def register(self, twitter_user):
+        db = self.get_database()
+        query = "SELECT * FROM users WHERE twitter_id = %s LIMIT 1"
+        user = db.get(query, twitter_user['id'])
+        if user:
+            user_id = user['id']
+            query = (
+                "UPDATE users SET " +
+                "username=%s, " +
+                "url=%s, " +
+                "twitter_access_token_key=%s, " +
+                "twitter_access_token_secret=%s, " +
+                "twitter_display_icon=%s "+
+                "where twitter_id=%s"
+            )
+            db.execute(
+                query,
+                twitter_user['username'],
+                twitter_user['url'],
+                twitter_user['access_token']['key'],
+                twitter_user['access_token']['secret'],
+                twitter_user['profile_image_url'],
+                twitter_user['id']
+            )
+        else:
+            query = (
+                "INSERT INTO users(" +
+                "username, url, twitter_access_token_key, twitter_access_token_secret,"+
+                "twitter_display_icon,  twitter_id" +
+                ") VALUES (%s, %s, %s, %s)"
+            )
+            user_id = db.execute_lastrowid(
+                query, 
+                twitter_user['username'],
+                twitter_user['url'],
+                twitter_user['access_token']['key'],
+                twitter_user['access_token']['secret'],
+                twitter_user['profile_image_url'],
+                twitter_user['id']
+            )
+        db.close()
+
+        logged_user = dict(
+            id = user_id,
+            twitter_id = twitter_user['id'],
+            username = twitter_user['username'],
+            url = twitter_user['url'],
+            twitter_display_icon = twitter_user['profile_image_url'] 
+        )
+        return logged_user
 
 
 class DojoTo(tornado.web.Application):
