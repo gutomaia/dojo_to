@@ -50,7 +50,7 @@ CREATE TABLE `dojos` (
 ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
 CREATE TABLE `participants` (
-    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `id` serial,
     `user_id` int(11) NOT NULL,
     `dojo_id` int(11) NOT NULL,
     `confirmed` int(1) NULL,
