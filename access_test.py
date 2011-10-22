@@ -29,6 +29,11 @@ class AccessTest(AsyncHTTPTestCase):
         self.assertEquals(200, response.code)
         #self.assertRegexpMatches(response.body,r'.*Hello.*')
 
+    def test_access_a_dojo_page(self):
+        response = self.fetch('/dojo/1')
+        self.assertEquals(200, response.code)
+
+
     def test_access_dojo_to_learn_python(self):
         response = self.fetch('/learn/python')
         self.assertEquals(200, response.code)

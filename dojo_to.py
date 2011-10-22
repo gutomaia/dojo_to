@@ -54,6 +54,13 @@ class BaseHandler(tornado.web.RequestHandler):
     def json_content(self):
         self.set_header('Content-Type', 'application/json')
 
+    def get_accept_types(self):
+        accept = self.request.headers.get('Accept')
+        if accept:
+            return self.request.headers['Accept'].split(',')
+        else:
+            return ['text/html']
+
 class PageHandler(BaseHandler):
 
     def get(self):
@@ -93,8 +100,8 @@ class DojoApiHandler(BaseHandler):
     
     @tornado.web.authenticated
     def post(self, id=None):
-        content_type = self.request.headers['Content-Type']
-        if content_type == 'application/x-www-form-urlencoded':
+        accept_types = self.get_accept_types()
+        if 'application/x-www-form-urlencoded' in accept_types:
             dojo = dict (
                 user_id = 1,
                 language = self.get_argument('language'),
@@ -105,7 +112,7 @@ class DojoApiHandler(BaseHandler):
             dojo_id = self.create(dojo)
             self.redirect("/dojo/"+ str(dojo_id))
             return
-        elif content_type == 'application/json':
+        elif 'application/json' in accept_types:
             dojo = json_decode(self.request.body)
             dojo.setdefault('user_id', 1)
             dojo_id = self.create(dojo)
@@ -133,19 +140,11 @@ class DojoApiHandler(BaseHandler):
         query = (
             "SELECT * FROM dojos WHERE id = %s"
         )
-
-        if content_type == 'text/html':
-            dojo = dict (
-                user_id = 1,
-                language = self.get_argument('language'),
-                location = self.get_argument('location'),
-                address = self.get_argument('address'),
-                city = self.get_argument('city')
-            )
-            dojo_id = self.create(dojo)
-            self.redirect("/dojo/"+ str(dojo_id))
-            return
-        elif content_type == 'application/json':
+        accept_types = self.get_accept_types()
+        if 'text/html' in accept_types:
+            self.write('oi')
+            pass
+        elif 'application/json' in accept_types:
             pass
 
 
@@ -272,6 +271,9 @@ class DojoTo(tornado.web.Application):
             (r"/", PageHandler),
             (r"/learn/([A-Za-z_]+)", DojoPageHandler),
             (r"/learn/([A-Za-z_]+)/in/([A-Za-z_]+)", DojoPageHandler),
+
+            (r"/dojo/([0-9]+)", DojoApiHandler),
+
             (r"/login/twitter", TwitterHandler),
             (r"/logout", LogoutHandler),
             (r"/api/dojo/?([0-9]+)?", DojoApiHandler),

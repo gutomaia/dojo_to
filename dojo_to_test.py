@@ -38,15 +38,14 @@ class DojoToHttpTest(AsyncHTTPTestCase):
         super(DojoToHttpTest, self).tearDown()
 
     def get_app(self):
-        #self.mox.CreateMock(DojoTo)
         app = DojoTo(options)
         self.mox.StubOutWithMock(DojoApiHandler, 'get_current_user', use_mock_anything=True)
         logged_user = dict(
             id = 1,
-            twitter_id = 21313,
+            twitter_id = 13818022,
             username = 'gutomaia',
             url = 'http://gutomaia.com',
-            twitter_display_icon = 'asdf'
+            twitter_display_icon = 'http://a2.twimg.com/profile_images/652584720/avatar_normal.jpg'
         )
         DojoApiHandler.get_current_user().AndReturn(logged_user)
         return app
@@ -61,8 +60,8 @@ class DojoToHttpTest(AsyncHTTPTestCase):
             date_hour = 'Sex Out 21 18:40:23 BRST 2011'
         )
         body = urlencode(expected)
-        headers = {'Content-Type': 'application/x-www-form-urlencoded'}
-        response = self.fetch('/api/dojo', method='POST', body=body, follow_redirects=False)
+        headers = {'Accept': 'application/x-www-form-urlencoded'}
+        response = self.fetch('/api/dojo', method='POST', body=body, follow_redirects=False, headers=headers)
         self.assertEquals(302, response.code)
         db = database.Connection("localhost", "dojo_to")
         dojos = db.execute_rowcount("SELECT * FROM dojos")
@@ -84,7 +83,7 @@ class DojoToHttpTest(AsyncHTTPTestCase):
             city = 'São Paulo',
             date_hour = 'Sex Out 21 18:40:23 BRST 2011'
         )
-        headers = {'Content-Type': 'application/json'}
+        headers = {'Accept': 'application/json'}
         body = json_encode(expected)
         response = self.fetch('/api/dojo', method='POST', body=body, follow_redirects=False, headers=headers)
         self.assertEquals(200, response.code)
