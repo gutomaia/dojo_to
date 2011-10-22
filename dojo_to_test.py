@@ -22,7 +22,6 @@ parse_config_file(os.getenv("HOME") + "/.dojo_to.conf")
 class DojoToTest(unittest.TestCase):
 
     def test_twitter_handler_on_auth(self):
- #       th = TwitterHandler();
         self.assertTrue(True)
 
 class DojoToHttpTest(AsyncHTTPTestCase):
@@ -36,7 +35,7 @@ class DojoToHttpTest(AsyncHTTPTestCase):
     def tearDown(self):
         self.mox.UnsetStubs()
         self.mox.ResetAll()
-        #super(DojoToHttpTest, self).tearDown()
+        super(DojoToHttpTest, self).tearDown()
 
     def get_app(self):
         #self.mox.CreateMock(DojoTo)
@@ -46,7 +45,7 @@ class DojoToHttpTest(AsyncHTTPTestCase):
             id = 1,
             twitter_id = 21313,
             username = 'gutomaia',
-            url = 'http://',
+            url = 'http://gutomaia.com',
             twitter_display_icon = 'asdf'
         )
         DojoApiHandler.get_current_user().AndReturn(logged_user)
@@ -54,26 +53,31 @@ class DojoToHttpTest(AsyncHTTPTestCase):
 
     def test_create_a_dojo_with_a_simple_post(self):
         self.mox.ReplayAll()
-        form = dict(
+        expected = dict(
             language = "python",
             location = 'GruPy HeadQuarters',
             address = 'asdf',
             city = 'São Paulo',
             date_hour = 'Sex Out 21 18:40:23 BRST 2011'
         )
-        body = urlencode(form)
+        body = urlencode(expected)
         headers = {'Content-Type': 'application/x-www-form-urlencoded'}
         response = self.fetch('/api/dojo', method='POST', body=body, follow_redirects=False)
         self.assertEquals(302, response.code)
         db = database.Connection("localhost", "dojo_to")
         dojos = db.execute_rowcount("SELECT * FROM dojos")
         self.assertEquals(4, dojos)
+        actual = db.get('SELECT * from dojos WHERE id = 4')
+        self.assertEquals(expected['language'], actual['language'])
+        self.assertEquals(expected['location'], actual['location'])
+        self.assertEquals(expected['address'], actual['address'])
+        self.assertEquals(expected['city'], actual['city'])
         db.close()
         self.mox.VerifyAll()
         
     def test_create_a_dojo_from_a_json(self):
         self.mox.ReplayAll()
-        form = dict(
+        expected = dict(
             language = "python",
             location = 'GruPy HeadQuarters',
             address = 'asdf',
@@ -81,12 +85,18 @@ class DojoToHttpTest(AsyncHTTPTestCase):
             date_hour = 'Sex Out 21 18:40:23 BRST 2011'
         )
         headers = {'Content-Type': 'application/json'}
-        body = json_encode(form)
+        body = json_encode(expected)
         response = self.fetch('/api/dojo', method='POST', body=body, follow_redirects=False, headers=headers)
         self.assertEquals(200, response.code)
         db = database.Connection("localhost", "dojo_to")
         dojos = db.execute_rowcount("SELECT * FROM dojos")
         self.assertEquals(4, dojos)
+        actual = db.get('SELECT * from dojos WHERE id = 4')
+        self.assertEquals(expected['language'], actual['language'])
+        self.assertEquals(expected['location'], actual['location'])
+        self.assertEquals(expected['address'], actual['address'])
+        self.assertEquals(expected['city'], actual['city'])
+        db.close()
         self.mox.VerifyAll()
 
 if __name__ == '__main__':

@@ -47,7 +47,6 @@ class BaseHandler(tornado.web.RequestHandler):
         return db
 
     def get_current_user(self):
-        print "call"
         if self.get_cookie('user'): #TODO check for a non-secure-cookie
             return json_decode(self.get_secure_cookie('user'))
         return None
