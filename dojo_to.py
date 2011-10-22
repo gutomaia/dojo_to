@@ -47,10 +47,9 @@ class BaseHandler(tornado.web.RequestHandler):
         return db
 
     def get_current_user(self):
+        print "call"
         if self.get_cookie('user'): #TODO check for a non-secure-cookie
-            print 'user logged'
             return json_decode(self.get_secure_cookie('user'))
-        print 'user not logged'
         return None
 
     def json_content(self):
@@ -93,9 +92,8 @@ class CrudDojoHandler(BaseHandler):
 
 class DojoApiHandler(BaseHandler):
     
-    #@tornado.web.authenticated
-    #@tornado.web.asynchronous
-    def post(self, id=None): #create
+    @tornado.web.authenticated
+    def post(self, id=None):
         content_type = self.request.headers['Content-Type']
         if content_type == 'application/x-www-form-urlencoded':
             dojo = dict (
@@ -107,14 +105,16 @@ class DojoApiHandler(BaseHandler):
             )
             dojo_id = self.create(dojo)
             self.redirect("/dojo/"+ str(dojo_id))
+            return
         elif content_type == 'application/json':
-            pass
-        #db = self.get_database()
-        #query = "INSERT INTO dojos (user_id, language, location, address, city) values (1, 'python', 'Google', 'a','São Paulo')"
-        #dojo_id = db.execute_lastrowid(query, user_id)
-        #db.close()
-        #if dojo_id:
-        #
+            dojo = json_decode(self.request.body)
+            dojo.setdefault('user_id', 1)
+            dojo_id = self.create(dojo)
+            self.write(str(dojo_id))
+            return
+        else:
+            print 'error'
+
     def create(self, dojo):
         db = self.get_database()
         query = (
@@ -128,13 +128,31 @@ class DojoApiHandler(BaseHandler):
             dojo['address'], dojo['city']
         )
         db.close()
+        return dojo_id
 
-        #self.json_content()
     def get(self, id): #restore
-        self.write('get')
-        #self.json_content()
-        #self.write(json_encode(crud.restore()))
+        query = (
+            "SELECT * FROM dojos WHERE id = %s"
+        )
+
+        if content_type == 'text/html':
+            dojo = dict (
+                user_id = 1,
+                language = self.get_argument('language'),
+                location = self.get_argument('location'),
+                address = self.get_argument('address'),
+                city = self.get_argument('city')
+            )
+            dojo_id = self.create(dojo)
+            self.redirect("/dojo/"+ str(dojo_id))
+            return
+        elif content_type == 'application/json':
+            pass
+
+
+    def restore(self, dojo_id):
         pass
+
     def put (self, id): #update
         #self.json_content()
         pass
@@ -194,8 +212,6 @@ class TwitterHandler(BaseHandler, tornado.auth.TwitterMixin):
             ") VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
         )
         
-        #del user['status']
-        #del user['access_token']
         self.set_secure_cookie('user', json_encode(logged_user))    
         self.redirect("/")
 
