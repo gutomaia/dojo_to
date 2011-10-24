@@ -222,6 +222,7 @@ class TwitterHandler(BaseHandler, tornado.auth.TwitterMixin):
         user = db.get(query, twitter_user['id'])
         if user:
             user_id = user['id']
+            #TODO, do not update token keys unless it is needed
             query = (
                 "UPDATE users SET " +
                 "username=%s, " +
@@ -245,7 +246,7 @@ class TwitterHandler(BaseHandler, tornado.auth.TwitterMixin):
                 "INSERT INTO users(" +
                 "username, url, twitter_access_token_key, twitter_access_token_secret,"+
                 "twitter_display_icon,  twitter_id" +
-                ") VALUES (%s, %s, %s, %s, %s)"
+                ") VALUES (%s, %s, %s, %s, %s, %s)"
             )
             user_id = db.execute_lastrowid(
                 query, 
@@ -258,6 +259,7 @@ class TwitterHandler(BaseHandler, tornado.auth.TwitterMixin):
             )
         db.close()
 
+        #TODO, adicionar data e user_agent
         logged_user = dict(
             id = user_id,
             twitter_id = twitter_user['id'],
