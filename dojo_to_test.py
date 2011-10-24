@@ -40,17 +40,18 @@ class DojoToHttpTest(AsyncHTTPTestCase):
     def get_app(self):
         app = DojoTo(options)
         self.mox.StubOutWithMock(DojoApiHandler, 'get_current_user', use_mock_anything=True)
-        logged_user = dict(
+        self.logged_user = dict(
             id = 1,
             twitter_id = 13818022,
             username = 'gutomaia',
             url = 'http://gutomaia.com',
             twitter_display_icon = 'http://a2.twimg.com/profile_images/652584720/avatar_normal.jpg'
         )
-        DojoApiHandler.get_current_user().AndReturn(logged_user)
         return app
 
     def test_create_a_dojo_with_a_simple_post(self):
+        DojoApiHandler.get_current_user().AndReturn(self.logged_user)
+        DojoApiHandler.get_current_user().AndReturn(self.logged_user)
         self.mox.ReplayAll()
         expected = dict(
             language = "python",
@@ -75,6 +76,8 @@ class DojoToHttpTest(AsyncHTTPTestCase):
         self.mox.VerifyAll()
         
     def test_create_a_dojo_from_a_json(self):
+        DojoApiHandler.get_current_user().AndReturn(self.logged_user)
+        DojoApiHandler.get_current_user().AndReturn(self.logged_user)
         self.mox.ReplayAll()
         expected = dict(
             language = "python",

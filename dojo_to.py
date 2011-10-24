@@ -103,7 +103,7 @@ class DojoApiHandler(BaseHandler):
         accept_types = self.get_accept_types()
         if 'application/x-www-form-urlencoded' in accept_types:
             dojo = dict (
-                user_id = 1,#TODO
+                user_id = self.get_current_user()['id'],
                 language = self.get_argument('language'),
                 location = self.get_argument('location'),
                 address = self.get_argument('address'),
@@ -114,7 +114,7 @@ class DojoApiHandler(BaseHandler):
             return
         elif 'application/json' in accept_types:
             dojo = json_decode(self.request.body)
-            dojo.setdefault('user_id', 1) #TODO
+            dojo.setdefault('user_id', self.get_current_user()['id'])
             dojo_id = self.create(dojo)
             self.write(str(dojo_id))
             return
@@ -122,19 +122,22 @@ class DojoApiHandler(BaseHandler):
             print 'error' #throw an error
 
     def create(self, dojo):
-        db = self.get_database()
-        query = (
-            "INSERT INTO dojos ("+
-            "user_id, language, location, address, city"+
-            ") values (%s, %s, %s, %s, %s)"
-        )
-        dojo_id = db.execute_lastrowid(
-            query,
-            dojo['user_id'], dojo['language'], dojo['location'],
-            dojo['address'], dojo['city']
-        )
-        db.close()
-        return dojo_id
+        try:
+            db = self.get_database()
+            query = (
+                "INSERT INTO dojos ("+
+                "user_id, language, location, address, city"+
+                ") values (%s, %s, %s, %s, %s)"
+            )
+            dojo_id = db.execute_lastrowid(
+                query,
+                dojo['user_id'], dojo['language'], dojo['location'],
+                dojo['address'], dojo['city']
+            )
+            db.close()
+            return dojo_id
+        except ProgrammingError:
+            pass
 
     def get(self, id): #restore
         query = (
@@ -200,7 +203,7 @@ class TwitterHandler(BaseHandler, tornado.auth.TwitterMixin):
     def _on_auth(self, user):
         if not user: raise tornado.web.HTTPError(500, "Twitter auth failed")
         logged_user = self.register(user)
-        query = ("INSERT INTO twitterlogins ("
+        query = ("INSERT INTO twitterlogins (" +
             "user_id, username, twitter_id," +
             "protected, following, " +
             "friends_count, " + "followers_count, " +
