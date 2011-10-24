@@ -245,7 +245,7 @@ class TwitterHandler(BaseHandler, tornado.auth.TwitterMixin):
                 "INSERT INTO users(" +
                 "username, url, twitter_access_token_key, twitter_access_token_secret,"+
                 "twitter_display_icon,  twitter_id" +
-                ") VALUES (%s, %s, %s, %s)"
+                ") VALUES (%s, %s, %s, %s, %s)"
             )
             user_id = db.execute_lastrowid(
                 query, 
