@@ -15,6 +15,12 @@ from tornado import database
 
 from tornado.options import define, options
 
+import logging
+
+logging.basicConfig(level=logging.INFO)
+log = logging.getLogger('dojolog')
+
+
 define("port", help="Application Port", default=8888)
 
 define("cookie_secret", help="App Cookie Secret")
@@ -242,21 +248,29 @@ class TwitterHandler(BaseHandler, tornado.auth.TwitterMixin):
                 twitter_user['id']
             )
         else:
-            query = (
-                "INSERT INTO users(" +
-                "username, url, twitter_access_token_key, twitter_access_token_secret,"+
-                "twitter_display_icon,  twitter_id" +
-                ") VALUES (%s, %s, %s, %s, %s, %s)"
-            )
-            user_id = db.execute_lastrowid(
-                query, 
-                twitter_user['username'],
-                twitter_user['url'],
-                twitter_user['access_token']['key'],
-                twitter_user['access_token']['secret'],
-                twitter_user['profile_image_url'],
-                twitter_user['id']
-            )
+            try:
+                query = (
+                    "INSERT INTO users(" +
+                    "username, url, twitter_access_token_key, twitter_access_token_secret,"+
+                    "twitter_display_icon,  twitter_id" +
+                    ") VALUES (%s, %s, %s, %s, %s, %s)"
+                )
+                user_id = db.execute_lastrowid(
+                    query, 
+                    twitter_user['username'],
+                    twitter_user['url'],
+                    twitter_user['access_token']['key'],
+                    twitter_user['access_token']['secret'],
+                    twitter_user['profile_image_url'],
+                    twitter_user['id']
+                )
+            except TypeError as te:
+                log.error("TypeError on the query: " )
+                print 'ERROR: '
+                print query
+                print twitter_user
+
+
         db.close()
 
         #TODO, adicionar data e user_agent
