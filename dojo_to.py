@@ -103,7 +103,7 @@ class DojoApiHandler(BaseHandler):
         accept_types = self.get_accept_types()
         if 'application/x-www-form-urlencoded' in accept_types:
             dojo = dict (
-                user_id = 1,
+                user_id = 1,#TODO
                 language = self.get_argument('language'),
                 location = self.get_argument('location'),
                 address = self.get_argument('address'),
@@ -114,12 +114,12 @@ class DojoApiHandler(BaseHandler):
             return
         elif 'application/json' in accept_types:
             dojo = json_decode(self.request.body)
-            dojo.setdefault('user_id', 1)
+            dojo.setdefault('user_id', 1) #TODO
             dojo_id = self.create(dojo)
             self.write(str(dojo_id))
             return
         else:
-            print 'error'
+            print 'error' #throw an error
 
     def create(self, dojo):
         db = self.get_database()
@@ -140,16 +140,16 @@ class DojoApiHandler(BaseHandler):
         query = (
             "SELECT * FROM dojos WHERE id = %s"
         )
+        db = self.get_database()
+        dojo = db.get(query, id)
+        participants = None
         accept_types = self.get_accept_types()
         if 'text/html' in accept_types:
-            self.write('oi')
-            pass
+            self.render('dojo.html', logged_user = self.get_current_user(), dojo = dojo)
+            return
         elif 'application/json' in accept_types:
+            #self.write(json_encode(dojo))
             pass
-
-
-    def restore(self, dojo_id):
-        pass
 
     def put (self, id): #update
         #self.json_content()
@@ -273,6 +273,7 @@ class DojoTo(tornado.web.Application):
             (r"/learn/([A-Za-z_]+)/in/([A-Za-z_]+)", DojoPageHandler),
 
             (r"/dojo/([0-9]+)", DojoApiHandler),
+            (r"/user/([A-Za-z_]+)", DojoApiHandler),
 
             (r"/login/twitter", TwitterHandler),
             (r"/logout", LogoutHandler),

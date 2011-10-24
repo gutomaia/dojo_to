@@ -8,19 +8,19 @@
 }
 
 html {
-	
+	background-repeat: no-repeat;
+	background-image: -moz-linear-gradient(top, #ff9330, #ffff01);
+	background-image: -webkit-gradient(linear, left top,left bottom, from(#ff9330), to(#ffff01));
+	background-image: linear-gradient(top, #ff9330, #ffff01);
+	background-color: #ffff01;	
 }
 
 body {
-background-repeat: no-repeat;
-background-image: -moz-linear-gradient(top, #4eaee6, #398bba);
-background-image: -webkit-gradient(linear, left top,left bottom, from(#4eaee6), to(#398bba));
-background-image: linear-gradient(top, #4eaee6, #398bba);
 
-color:#333;
-font-family:Helvetica, Arial, sans-serif;
-font-size:12px;
-margin:0;
+	color:#333;
+	font-family:Helvetica, Arial, sans-serif;
+	font-size:12px;
+	margin:0;
 }
 
 a {
@@ -96,19 +96,19 @@ padding:0;
 .top {
 width:100%;
 margin:0 0 25px 0;
-background-color:#FFF;
-background-image: -moz-linear-gradient(top, #e2e2e2, #FFFFFF);
-background-image: -webkit-gradient(linear, left top,left bottom, from(#e2e2e2), to(#FFFFFF));
-background-image: linear-gradient(top, #e2e2e2, #FFFFFF);
+background-color:#333333;
+background-image: -moz-linear-gradient(top, #2d2d2d, #1a1a1a);
+background-image: -webkit-gradient(linear, left top,left bottom, from(#2d2d2d), to(#1a1a1a));
+background-image: linear-gradient(top, #2d2d2d, #1a1a1a);
 -webkit-box-shadow:-6px 1px 6px rgba(0, 0, 0, 0.4);
 -moz-box-shadow:-6px 1px 6px rgba(0, 0, 0, 0.4);
 box-shadow:-6px 1px 6px rgba(0, 0, 0, 0.4);
 overflow:hidden;
-height:70px;
+height:45px;
 }
 
 .top .logo {
-padding:12px 0 0 20px;
+padding:7px 0 0 20px;
 display:inline;
 }
 
@@ -118,21 +118,22 @@ float:right;
 
 .top .menu li {
 display:inline;
-height: 70px;
+height: 45px;
 text-align: center;
 list-style:none;
 }
 
 .top .menu li a{
 padding: 15px 18px 15px 18px;
-font-size:18px;
-color:#333;
-text-shadow: 0px 1px 0px #FFF;
-line-height:45px;
+font-size:14px;
+color:#999999;
+text-shadow: 0px 1px 0px #333;
+line-height:20px;
 }
 
 .top .menu li a:hover{
-color:#999;
+color:#FFFFFF;
+background-color:#333;
 text-decoration:none;
 }
 

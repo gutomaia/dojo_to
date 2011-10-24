@@ -4,18 +4,20 @@
 	<div class="content column grid_6">
         <h1>Next Dojos</h1>
         <ul>
-            <li></li>            
+            {% for dojo in dojos %}
+            <li>{{dojo.language}}, {{ dojo.location}}, {{dojo.city}}</li>
+            {% end %}
         </ul>
         <h1>Timeline</h1>
 	    <ul class="timeline">
-		{% for dojo in dojos %}
+		{% for participant in participants %}
 	    	<li>
-	    		{% if dojo.twitter_display_icon %}
-	    			<img src="{{dojo.twitter_display_icon}}" align="left" />
+	    		{% if participant.twitter_display_icon %}
+	    			<img src="{{participant.twitter_display_icon}}" align="left" />
 	    		{% else %}
 	    			<img src="/static/img/none.png" align="left" />
 	    		{% end %}
-				<p><a href="/user/{{dojo.username}}">{{ dojo.username }}</a> will practice <a href="/learn/{{dojo.language}}">{{ dojo.language }}</a> at {{dojo.location}} in <a>{{ escape(dojo.city) }}</a> <a href="#">mais &raquo;</a></p>
+				<p><a href="/user/{{participant.username}}">{{ participant.username }}</a> will practice <a href="/learn/{{participant.language}}">{{ participant.language }}</a> at {{participant.location}} in <a>{{ escape(participant.city) }}</a> <a href="#">mais &raquo;</a></p>
 		{% end %}
 	    </ul>
 	</div>
