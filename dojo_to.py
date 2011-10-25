@@ -97,12 +97,19 @@ class TimelineHandler(BaseHandler):
         elif 'application/json' in accept_types:
             pass
         elif 'text/html' in accept_types:
-            self.render('home.html', content1 = content, content2 = None, logged_user = self.current_user)
+            self.render('home.html', content1 = content, content2 = '', logged_user = self.current_user)
 
 class DojoPageHandler(BaseHandler):
 
     def get(self, language=None, city=None):
-        self.write(language)
+        content = language
+        accept_types = self.get_accept_types()
+        if 'ajax/html' in accept_types:
+            self.write(content)
+        elif 'application/json' in accept_types:
+            pass
+        elif 'text/html' in accept_types:
+            self.render('home.html', content1 = content, content2 = '', logged_user = self.current_user)
 
 class CrudDojoHandler(BaseHandler):
 
@@ -164,12 +171,16 @@ class DojoApiHandler(BaseHandler):
         dojo = db.get(query, id)
         participants = None
         accept_types = self.get_accept_types()
+        content = self.render_string('dojo.html', logged_user = self.get_current_user(), dojo = dojo)
         if 'text/html' in accept_types:
-            self.render('dojo.html', logged_user = self.get_current_user(), dojo = dojo)
+            self.render('home.html', content1 = content, content2 = None, logged_user = self.current_user)
             return
         elif 'application/json' in accept_types:
             #self.write(json_encode(dojo))
-            pass
+            return
+        elif 'ajax/html' in accept_types:
+            self.write(content)
+            return
 
     def put (self, id): #update
         #self.json_content()

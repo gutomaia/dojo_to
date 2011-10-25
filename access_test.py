@@ -27,24 +27,27 @@ class AccessTest(AsyncHTTPTestCase):
     def test_homepage(self):
         response = self.fetch('/')
         self.assertEquals(200, response.code)
-        #self.assertRegexpMatches(response.body,r'.*Hello.*')
 
     def test_timeline(self):
         response = self.fetch('/timeline')
         self.assertEquals(200, response.code)
+        self.assertRegexpMatches(response.body, r'<title>.+</title>')
+        self.assertNotRegexpMatches(response.body,r'None')
 
-    def test_access_a_dojo_page(self):
+    def test_access_dojo_1_page(self):
         response = self.fetch('/dojo/1')
         self.assertEquals(200, response.code)
+        self.assertRegexpMatches(response.body, r'<title>.+</title>')
 
-    def test_access_a_dojo_page(self):
+    def test_access_dojo_2_page(self):
         response = self.fetch('/dojo/2')
         self.assertEquals(200, response.code)
-
+        self.assertRegexpMatches(response.body, r'<title>.+</title>')
 
     def test_access_dojo_to_learn_python(self):
         response = self.fetch('/learn/python')
         self.assertEquals(200, response.code)
+        self.assertRegexpMatches(response.body, r'<title>.+</title>')
 
     def test_access_dojo_to_learn_java(self):
         response = self.fetch('/learn/java')
