@@ -1,0 +1,28 @@
+<div class="content">
+    {% if dojos %}
+        <h1>Next Dojos</h1>
+        <ul>
+            {% for dojo in dojos %}
+            <li>{{dojo.language}}, {{ dojo.location}}, {{dojo.city}}</li>
+            {% end %}
+        </ul>
+    {% else %}
+        Sadly there are no dojos schecdules right now. So stop wiing and
+        <a href="/create-a-dojo">Create A Dojo</a>
+    {% end %}
+    {% if participants %}
+        <h1>Timeline</h1>
+	    <ul class="timeline">
+		{% for participant in participants %}
+	    	<li>
+	    		{% if participant.twitter_display_icon %}
+	    			<img src="{{participant.twitter_display_icon}}" align="left" />
+	    		{% else %}
+	    			<img src="/static/img/none.png" align="left" />
+	    		{% end %}
+				<p><a href="/user/{{participant.username}}">{{ participant.username }}</a> will practice <a href="/learn/{{participant.language}}">{{ participant.language }}</a> at {{participant.location}} in <a href="/go_in/{{ participant.city }}">{{ escape(participant.city) }}</a></p><a href="/dojo/{{ participant.dojo_id }}">more &raquo;</a>
+            </li>
+		{% end %}
+        </ul>
+    {% end %}
+</div>

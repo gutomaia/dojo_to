@@ -71,7 +71,7 @@ class HomeHandler(BaseHandler):
     def get(self):
         self.render('home.html', content1 = None, content2 = None, logged_user = self.current_user)
 
-class PageHandler(BaseHandler):
+class TimelineHandler(BaseHandler):
 
     def get(self):
         db = self.get_database()
@@ -80,7 +80,7 @@ class PageHandler(BaseHandler):
             pass
         dojos = db.query("SELECT * FROM dojos")
         query = (
-            "select p.id, u.id, d.id, u.username, u.twitter_display_icon, d.language, d.location, d.city " +
+            "select p.id, u.id as user_id, d.id as dojo_id, u.username, u.twitter_display_icon, d.language, d.location, d.city " +
             "from participants as p " +
             "inner join (users as u, dojos as d) " + 
             "on (p.user_id = u.id and p.dojo_id = d.id) order by p.created_at limit 15"
@@ -90,7 +90,14 @@ class PageHandler(BaseHandler):
             "select d.id, d.language, d.location, d.city"
         )
         db.close()
-        self.render('index.html', dojos = dojos, participants = participants, logged_user = self.current_user)
+        accept_types = self.get_accept_types()
+        content = self.render_string('timeline.html', dojos = dojos, participants = participants)
+        if 'ajax/html' in accept_types:
+            self.write(content)
+        elif 'application/json' in accept_types:
+            pass
+        elif 'text/html' in accept_types:
+            self.render('home.html', content1 = content, content2 = None, logged_user = self.current_user)
 
 class DojoPageHandler(BaseHandler):
 
@@ -292,6 +299,7 @@ class DojoTo(tornado.web.Application):
     def __init__(self, options):
         handlers = [
             (r"/", HomeHandler),
+            (r"/timeline", TimelineHandler),
             (r"/learn/([A-Za-z_]+)", DojoPageHandler),
             (r"/learn/([A-Za-z_]+)/in/([A-Za-z_]+)", DojoPageHandler),
 
