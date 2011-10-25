@@ -40,20 +40,17 @@
 	</div>
 </div>
 
-<!--
 <noscript>
 	<div class="row">
-		<div class="column grid_6">
-			<iframe id="crapContainer1">
+			<iframe class="column grid_6" id="crapContainer1" src="/timeline?_framed=1">
+				<p>Your browser does not support iframes.</p>
 			</iframe>
-		</div>
 		<div class="column grid_6">
 			<iframe id="crapContainer2">
 			</iframe>
 		</div>
 	</div>
 </noscript>
--->
 
 <div class="row">
 	<div id="container1" class="column grid_6">{% raw content1 %}</div>
@@ -82,10 +79,15 @@
 		div.innerHTML = linker(content);
 	};
 
-
 	Path.map("#!/dojo/:id").to(function(){
 		var id = this.params["id"];
-		ajax.callServer('/dojo/'+id, ajaxCallback, 'container1', 'GET', null, null, {'Accept':'ajax/html'});
+		var context = {'container':2};
+		ajax.callServer('/dojo/'+id, ajaxCallback, 'container2', 'GET', null, null, {'Accept':'ajax/html'});
+	});
+
+	Path.map("#!/learn/:language").to(function(){
+		var language = this.params["language"];
+		ajax.callServer('/learn/'+language, ajaxCallback, 'container2', 'GET', null, null, {'Accept':'ajax/html'});
 	});
 
 	Path.map("#!/timeline").to(function(){
@@ -96,6 +98,22 @@
 
 	if (location.pathname == '/' && location.hash == "") {
 		ajax.callServer('/timeline', ajaxCallback, 'container1', 'GET', null, null, {'Accept':'ajax/html'});
+	};
+
+	function getCookie(name)
+	{
+		var i,x,y, cookies=document.cookie.split(";");
+		for (i=0;i<cookies.length;i++) {
+			x=cookies[i].substr(0,cookies[i].indexOf("="));
+			y=cookies[i].substr(cookies[i].indexOf("=")+1);
+			x=x.replace(/^\s+|\s+$/g,"");
+			if (x==name) return unescape(y);
+		}
+		return null
+	};
+
+	function isUserLogged(){
+		return (getCookie('user') != null);
 	};
 
 </script>
