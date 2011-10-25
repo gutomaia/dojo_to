@@ -69,7 +69,7 @@ class BaseHandler(tornado.web.RequestHandler):
 
 class HomeHandler(BaseHandler):
     def get(self):
-        self.render('home.html', content1 = None, content2 = None, logged_user = self.current_user)
+        self.render('home.html', content1 = '', content2 = '', logged_user = self.current_user)
 
 class TimelineHandler(BaseHandler):
 
@@ -92,7 +92,7 @@ class TimelineHandler(BaseHandler):
         db.close()
         accept_types = self.get_accept_types()
         content = self.render_string('timeline.html', dojos = dojos, participants = participants)
-        if 'ajax/html' in accept_types:
+        if 'ajax/html' in accept_types or self.get_argument('_framed', False):
             self.write(content)
         elif 'application/json' in accept_types:
             pass
@@ -118,7 +118,6 @@ class CrudDojoHandler(BaseHandler):
         if (id):
             pass
         self.render('dojo_form.html', dojo=dojo, logged_user = self.current_user)
-        pass
 
 class DojoApiHandler(BaseHandler):
     
