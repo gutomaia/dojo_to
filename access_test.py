@@ -27,6 +27,7 @@ class AccessTest(AsyncHTTPTestCase):
     def test_homepage(self):
         response = self.fetch('/')
         self.assertEquals(200, response.code)
+        self.assertNotRegexpMatches(response.body,r'None')
 
     def test_timeline(self):
         response = self.fetch('/timeline')
@@ -52,14 +53,17 @@ class AccessTest(AsyncHTTPTestCase):
     def test_access_dojo_to_learn_java(self):
         response = self.fetch('/learn/java')
         self.assertEquals(200, response.code)
+        self.assertNotRegexpMatches(response.body,r'None')
 
     def test_access_dojo_to_learn_php(self):
         response = self.fetch('/learn/php')
         self.assertEquals(200, response.code)
+        self.assertNotRegexpMatches(response.body,r'None')
 
     def test_access_dojo_to_learn_python_in_sao_paulo(self):
         response = self.fetch('/learn/python/in/sao_paulo')
         self.assertEquals(200, response.code)
+        self.assertNotRegexpMatches(response.body,r'None')
 
 if __name__ == '__main__':
     unittest.main()
