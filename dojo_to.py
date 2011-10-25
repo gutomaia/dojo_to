@@ -67,6 +67,10 @@ class BaseHandler(tornado.web.RequestHandler):
         else:
             return ['text/html']
 
+class HomeHandler(BaseHandler):
+    def get(self):
+        self.render('home.html', content1 = None, content2 = None, logged_user = self.current_user)
+
 class PageHandler(BaseHandler):
 
     def get(self):
@@ -287,7 +291,7 @@ class TwitterHandler(BaseHandler, tornado.auth.TwitterMixin):
 class DojoTo(tornado.web.Application):
     def __init__(self, options):
         handlers = [
-            (r"/", PageHandler),
+            (r"/", HomeHandler),
             (r"/learn/([A-Za-z_]+)", DojoPageHandler),
             (r"/learn/([A-Za-z_]+)/in/([A-Za-z_]+)", DojoPageHandler),
 
@@ -324,7 +328,6 @@ if __name__ == "__main__":
     #logging.info("starting dojo to server") 
     tornado.options.parse_command_line()
     tornado.options.parse_config_file(os.getenv("HOME") + "/.dojo_to.conf")
-
     DojoTo(options).listen(options.port)
 
     try:
