@@ -1,0 +1,101 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<script>
+			if (location.pathname != '/'){
+				window.location = '/#!' + location.pathname;
+			}
+		</script>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<title>Dojo to</title>
+		<link type="text/css" rel="stylesheet" href="/static/css/grid_desktop.css" media='screen and (min-width: 960px)' />
+		<link type="text/css" rel="stylesheet" href="/static/css/style.css" media="screen" />
+		<link href="http://fonts.googleapis.com/css?family=Andika" rel="stylesheet" type="text/css" />
+		<!--    <noscript> -->
+		<!--        <meta http-equiv=refresh content="0; URL=/?_dojo_noscript=1" />-->
+		<!--    </noscript> -->
+	</head>
+<body>
+
+<div class="top">
+	<div class="row">
+		<div class="column grid_4">
+		</div>
+		
+		<div class="column grid_6">
+			<ul class="menu">
+				<li><a href="learn/java">Java</a></li>
+				<li><a href="learn/php">PHP</a></li>
+				<li><a href="learn/Python">Python</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="column grid_4">
+		{% if logged_user %}
+			<h1>{{ logged_user['username'] }}</h1>
+			<a href="/logout"><span>Logout</span></a>
+		{% else %}
+			<a href="/login/twitter"><span>Login with twitter</span></a>
+		{% end %}
+	</div>
+</div>
+
+<!--
+<noscript>
+	<div class="row">
+		<div class="column grid_6">
+			<iframe id="crapContainer1">
+			</iframe>
+		</div>
+		<div class="column grid_6">
+			<iframe id="crapContainer2">
+			</iframe>
+		</div>
+	</div>
+</noscript>
+-->
+
+<div class="row">
+	<div id="container1" class="column grid_6">{% raw content1 %}</div>
+	<div id="container2" class="column grid_6">{% raw content2 %}</div>
+</div>
+
+<div id="footer" class="row">
+	<div class="column grid_12 footer">
+		<p class="left">&copy;2011 gUTO.nET. All Rights reserved.</p>
+	</div>
+</div>
+
+<script type="text/javascript" src="/static/js/dom.js"></script>
+<script type="text/javascript" src="/static/js/ajax.js"></script>
+<script type="text/javascript" src="/static/js/path.js"></script>
+<script type="text/javascript">
+	function ajaxCallback (content, headers, context, xhr){
+		//TODO reload
+		var div = document.getElementById(context);
+		//content.replace()
+		div.innerHTML = content;
+	};
+
+	function linker(link){
+		if(link != '/login/twitter'){
+
+		} else {
+			return link;
+		}
+	};
+
+	Path.map("#!/dojo/:id").to(function(){
+		var id = this.params["id"];
+		ajax.callServer('/dojo/'+id, ajaxCallback, 'container1', 'GET', null, null, {'Accept':'ajax/html'});
+	});
+
+	Path.map("#!/timeline").to(function(){
+		ajax.callServer('/timeline', ajaxCallback, 'container1', 'GET', null, null, {'Accept':'ajax/html'});
+	});
+
+	Path.listen();
+	ajax.callServer('/timeline', ajaxCallback, 'container1', 'GET', null, null, {'Accept':'ajax/html'});
+</script>
+</body>
+</html>
