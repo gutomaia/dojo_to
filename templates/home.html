@@ -70,20 +70,18 @@
 <script type="text/javascript" src="/static/js/ajax.js"></script>
 <script type="text/javascript" src="/static/js/path.js"></script>
 <script type="text/javascript">
+
+	function linker(text){
+		//if (link == '/login/twitter') return link;
+		var regex = /(<a href="(\/[^"]+)">([^<]+)<\/a>)/g
+    	return text.replace(regex,"<a href='/#!$2'>$3</a>");
+	};
+
 	function ajaxCallback (content, headers, context, xhr){
-		//TODO reload
 		var div = document.getElementById(context);
-		//content.replace()
-		div.innerHTML = content;
+		div.innerHTML = linker(content);
 	};
 
-	function linker(link){
-		if(link != '/login/twitter'){
-
-		} else {
-			return link;
-		}
-	};
 
 	Path.map("#!/dojo/:id").to(function(){
 		var id = this.params["id"];
@@ -96,8 +94,10 @@
 
 	Path.listen();
 
-	//if (location.pathname == '/' && location.)
-	//ajax.callServer('/timeline', ajaxCallback, 'container1', 'GET', null, null, {'Accept':'ajax/html'});
+	if (location.pathname == '/' && location.hash == "") {
+		ajax.callServer('/timeline', ajaxCallback, 'container1', 'GET', null, null, {'Accept':'ajax/html'});
+	};
+
 </script>
 </body>
 </html>
