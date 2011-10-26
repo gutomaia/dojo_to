@@ -12,7 +12,7 @@ from tornado.escape import json_encode, json_decode
 from testutils import init_db, drop_db
 import mox
 
-from dojo_to import DojoApiHandler, ParticipantApiHandler
+from dojo.api import DojoApiHandler, ParticipantApiHandler
 
 APP_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '.'))
 sys.path.append(os.path.join(APP_ROOT, '.'))
