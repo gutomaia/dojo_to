@@ -69,6 +69,9 @@ class BaseHandler(tornado.web.RequestHandler):
 
 class HomeHandler(BaseHandler):
     def get(self):
+        if self.get_argument('_escaped_fragment_', False):
+            self.redirect(self.get_argument('_escaped_fragment_'))
+            return
         self.render('home.html', content1 = '', content2 = '', logged_user = self.current_user)
 
 class TimelineHandler(BaseHandler):
