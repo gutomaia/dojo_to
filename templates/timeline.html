@@ -3,7 +3,17 @@
         <h1>Next Dojos</h1>
         <ul>
             {% for dojo in dojos %}
-            <li>{{dojo.language}}, {{ dojo.location}}, {{dojo.city}}</li>
+            <li class="vevent">
+                <abbr class="dtstart" title="2011-10-27T19:00-02:0000">Tomorow, 19</abbr> – 
+                <abbr class="dtend" title="2011-10-27T22:00-02:00">22pm</abbr> :  
+                <span class="summary">Dojo</span> at 
+                <span class="location">{{ dojo.location}}, {{dojo.city}}</span>
+                <div class="description">Test</div>
+                <div class="tags">
+                    Tags: <a rel="tag" href="http://eventful.com/events/tags/#dojo">#dojo</a>
+                    <a rel="tag" href="/learn/{{dojo.language}}">#{{dojo.language}}</a>
+                </div>
+            </li>
             {% end %}
         </ul>
     {% else %}
