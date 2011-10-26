@@ -37,4 +37,4 @@ expected = '<li>' +
 	'</p><a href="/#!/dojo/1">more »</a>'+
 	'</li>';
 
-//TODO assert.equal(expected, actual)
+assert.equal(expected, actual)
