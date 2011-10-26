@@ -191,6 +191,54 @@ class DojoApiHandler(BaseHandler):
         #self.json_content()
         pass
 
+
+class ParticipantApiHandler(BaseHandler):
+
+    @tornado.web.authenticated
+    def post(self, id=None):
+        accept_types = self.get_accept_types()
+        if 'application/x-www-form-urlencoded' in accept_types:
+            #TODO: if dojo event time > 12 horas confimed = False
+            participant = dict (
+                user_id = self.get_current_user()['id'],
+                dojo_id = self.get_argument('dojo_id'),
+                confirmed = False,
+            )
+            self.create(participant)
+            self.redirect("/dojo/"+ id)
+            return
+        elif 'application/json' in accept_types:
+            '''
+            dojo = json_decode(self.request.body)
+            dojo.setdefault('user_id', self.get_current_user()['id'])
+            self.create(dojo)
+            self.write('ok')
+            '''
+            return
+        else:
+            print 'error' #throw an error
+    
+    def create(self, participant):
+        try:
+            db = self.get_database()
+            query = (
+                "INSERT INTO participants ("+
+                "user_id, dojo_id) values (%s, %s)"
+            )
+            participant_id = db.execute_lastrowid(
+                query,
+                participant['user_id'], participant['dojo_id']
+            )
+            return participant_id
+        except TypeError:
+            pass
+        finally:
+            db.close()
+        #except ProgrammingError:
+        #pass
+
+
+
 class SocialApiHandler(BaseHandler):
 
     @tornado.web.authenticated
@@ -259,7 +307,7 @@ class TwitterHandler(BaseHandler, tornado.auth.TwitterMixin):
                 "url=%s, " +
                 "twitter_access_token_key=%s, " +
                 "twitter_access_token_secret=%s, " +
-                "twitter_display_icon=%s "+
+                "twitter_display_icon=%s " +
                 "where twitter_id=%s"
             )
             db.execute(
@@ -317,12 +365,13 @@ class DojoTo(tornado.web.Application):
             (r"/learn/([A-Za-z_]+)/in/([A-Za-z_]+)", DojoPageHandler),
 
             (r"/dojo/([0-9]+)", DojoApiHandler),
-            (r"/user/([A-Za-z_]+)", DojoApiHandler),
+            (r"/dojo/([0-9]+)/join", ParticipantApiHandler),
+            #(r"/user/([A-Za-z_]+)", DojoApiHandler),
 
             (r"/login/twitter", TwitterHandler),
             (r"/logout", LogoutHandler),
             (r"/api/dojo/?([0-9]+)?", DojoApiHandler),
-            (r"/api/dojo/([0-9]/join)", DojoApiHandler),
+            (r"/api/dojo/([0-9]+)/join", ParticipantApiHandler),
 
         ]
         settings = dict (

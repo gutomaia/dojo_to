@@ -1,4 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
 		<script>
@@ -11,9 +11,9 @@
 		<link type="text/css" rel="stylesheet" href="/static/css/grid_desktop.css" media='screen and (min-width: 960px)' />
 		<link type="text/css" rel="stylesheet" href="/static/css/style.css" media="screen" />
 		<link href="http://fonts.googleapis.com/css?family=Andika" rel="stylesheet" type="text/css" />
-		<!--    <noscript> -->
-		<!--        <meta http-equiv=refresh content="0; URL=/?_dojo_noscript=1" />-->
-		<!--    </noscript> -->
+		<!--<noscript> -->
+		<!--<meta http-equiv=refresh content="0; URL=/?_dojo_noscript=1" />-->
+		<!--</noscript> -->
 	</head>
 <body>
 
@@ -66,13 +66,8 @@
 <script type="text/javascript" src="/static/js/dom.js"></script>
 <script type="text/javascript" src="/static/js/ajax.js"></script>
 <script type="text/javascript" src="/static/js/path.js"></script>
+<script type="text/javascript" src="/static/js/linker.js"></script>
 <script type="text/javascript">
-
-	function linker(text){
-		//if (link == '/login/twitter') return link;
-		var regex = /(<a href="(\/[^"]+)">([^<]+)<\/a>)/g
-    	return text.replace(regex,"<a href='/#!$2'>$3</a>");
-	};
 
 	function ajaxCallback (content, headers, context, xhr){
 		var div = document.getElementById(context);
@@ -100,8 +95,7 @@
 		ajax.callServer('/timeline', ajaxCallback, 'container1', 'GET', null, null, {'Accept':'ajax/html'});
 	};
 
-	function getCookie(name)
-	{
+	function getCookie(name) {
 		var i,x,y, cookies=document.cookie.split(";");
 		for (i=0;i<cookies.length;i++) {
 			x=cookies[i].substr(0,cookies[i].indexOf("="));
@@ -115,6 +109,8 @@
 	function isUserLogged(){
 		return (getCookie('user') != null);
 	};
+
+
 
 </script>
 </body>

@@ -53,7 +53,7 @@ CREATE TABLE `participants` (
     `id` serial,
     `user_id` int(11) NOT NULL,
     `dojo_id` int(11) NOT NULL,
-    `confirmed` int(1) NULL,
+    `confirmed` boolean NOT NULL DEFAULT FALSE,
     `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,    
     PRIMARY KEY(`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
