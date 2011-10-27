@@ -5,7 +5,7 @@ from urllib import urlencode
 
 from tornado.testing import AsyncHTTPTestCase
 from tornado.options import parse_config_file, parse_command_line, options
-from dojo_to import DojoTo, TwitterHandler
+from dojo_to import DojoTo
 from tornado import database
 from tornado.escape import json_encode, json_decode
 

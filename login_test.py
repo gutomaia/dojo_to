@@ -6,12 +6,14 @@ from urllib import urlencode
 from tornado.testing import AsyncHTTPTestCase
 from tornado.web import Application
 from tornado.options import parse_config_file, parse_command_line, options
-from dojo_to import DojoTo, TwitterHandler
+from dojo_to import DojoTo
 from tornado import database
 
 from testutils import init_db, drop_db
 
 from mock import patch
+
+import dojo.auth
 
 APP_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '.'))
 sys.path.append(os.path.join(APP_ROOT, '.'))

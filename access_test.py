@@ -6,7 +6,7 @@ from urllib import urlencode
 from tornado.testing import AsyncHTTPTestCase
 from tornado.web import Application
 from tornado.options import parse_config_file, parse_command_line, options
-from dojo_to import DojoTo, TwitterHandler
+from dojo_to import DojoTo
 from tornado import database
 
 from testutils import init_db, drop_db
