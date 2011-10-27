@@ -9,10 +9,16 @@ class HomeHandler(BaseHandler):
             return
         self.render('home.html', content1 = '', content2 = '', logged_user = self.current_user)
 
+
 class TimelineHandler(BaseHandler):
 
-    def get(self):
+    def get(self, type = 'public'):
         db = self.get_database()
+        if type == 'of_friends' and self.current_user:
+            pass
+        if type == 'public':
+            pass
+
         if self.current_user:
             #friends = 
             pass
@@ -36,3 +42,5 @@ class TimelineHandler(BaseHandler):
             pass
         elif 'text/html' in accept_types:
             self.render('home.html', content1 = content, content2 = '', logged_user = self.current_user)
+
+
