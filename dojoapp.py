@@ -1,17 +1,10 @@
 # -*- coding: utf-8 -*-
 
-import os, os.path, sys, urllib
+import os
 
 import tornado.ioloop
 import tornado.web
 import tornado.auth
-
-from tornado.template import Template
-from tornado.escape import json_encode, json_decode
-from tornado.options import define, options
-
-from tornado import httpclient
-from tornado import database
 
 from tornado.options import define, options
 
@@ -44,39 +37,6 @@ define("twitter_callback", help="your twitter callback", default=None)
 
 define("github_client_id", help="your Github application client id")
 define("github_secret", help="your Github application secret")
-
-class CrudDojoHandler(BaseHandler):
-
-    @tornado.web.authenticated
-    def get(self, id = None):
-        if (id):
-            pass
-        self.render('dojo_form.html', dojo=dojo, logged_user = self.current_user)
-
-
-class SocialApiHandler(BaseHandler):
-
-    @tornado.web.authenticated
-    @tornado.web.asynchronous
-    def get(self, url):
-        if url == 'friends':
-            #if user has twitter
-            self.twitter_request("/followers/ids", 
-                access_token= user["access_token"],
-                callback= self.async_callback(self._on_twitter_friends))
-            #if user has facebook
-        if url == 'comments':
-            #self.twitter.r search twitter by dojo_id
-            pass
-        
-        self.write('ok')
-        
-    def _on_twitter_friends(self): 
-        query = "select username, twitter_display_icon  from users where twitter_id in (2,3) order by username"
-        pass
-
-    def _on_comments(self):
-        pass
 
 class DojoApp(tornado.web.Application):
     def __init__(self, options):

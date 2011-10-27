@@ -121,3 +121,27 @@ class ParticipantApiHandler(BaseHandler):
             db.close()
         #except ProgrammingError:
         #pass
+
+class SocialApiHandler(BaseHandler):
+
+    @tornado.web.authenticated
+    @tornado.web.asynchronous
+    def get(self, url):
+        if url == 'friends':
+            #if user has twitter
+            self.twitter_request("/followers/ids", 
+                access_token= user["access_token"],
+                callback= self.async_callback(self._on_twitter_friends))
+            #if user has facebook
+        if url == 'comments':
+            #self.twitter.r search twitter by dojo_id
+            pass
+        
+        self.write('ok')
+        
+    def _on_twitter_friends(self): 
+        query = "select username, twitter_display_icon  from users where twitter_id in (2,3) order by username"
+        pass
+
+    def _on_comments(self):
+        pass
