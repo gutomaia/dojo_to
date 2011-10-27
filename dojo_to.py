@@ -18,6 +18,8 @@ from tornado.options import define, options
 import logging
 
 import dojo.api
+import dojo.site
+from dojo.common import BaseHandler
 
 logging.basicConfig(level=logging.INFO)
 log = logging.getLogger('dojolog')
@@ -41,67 +43,6 @@ define("twitter_callback", help="your twitter callback", default=None)
 define("github_client_id", help="your Github application client id")
 define("github_secret", help="your Github application secret")
 
-
-class BaseHandler(tornado.web.RequestHandler):
-
-    def get_database(self):
-        db = database.Connection(
-            self.settings['database_host'],
-            self.settings['database_name'],
-            self.settings['database_username'],
-            self.settings['database_password']
-        )
-        return db
-
-    def get_current_user(self):
-        if self.get_cookie('user'): #TODO check for a non-secure-cookie
-            return json_decode(self.get_secure_cookie('user'))
-        return None
-
-    def json_content(self):
-        self.set_header('Content-Type', 'application/json')
-
-    def get_accept_types(self):
-        accept = self.request.headers.get('Accept')
-        if accept:
-            return self.request.headers['Accept'].split(',')
-        else:
-            return ['text/html']
-
-class HomeHandler(BaseHandler):
-    def get(self):
-        if self.get_argument('_escaped_fragment_', False):
-            self.redirect(self.get_argument('_escaped_fragment_'))
-            return
-        self.render('home.html', content1 = '', content2 = '', logged_user = self.current_user)
-
-class TimelineHandler(BaseHandler):
-
-    def get(self):
-        db = self.get_database()
-        if self.current_user:
-            #friends = 
-            pass
-        dojos = db.query("SELECT * FROM dojos")
-        query = (
-            "select p.id, u.id as user_id, d.id as dojo_id, u.username, u.twitter_display_icon, d.language, d.location, d.city " +
-            "from participants as p " +
-            "inner join (users as u, dojos as d) " + 
-            "on (p.user_id = u.id and p.dojo_id = d.id) order by p.created_at limit 15"
-        )
-        participants = db.query(query)
-        query = (
-            "select d.id, d.language, d.location, d.city"
-        )
-        db.close()
-        accept_types = self.get_accept_types()
-        content = self.render_string('timeline.html', dojos = dojos, participants = participants)
-        if 'ajax/html' in accept_types or self.get_argument('_framed', False):
-            self.write(content)
-        elif 'application/json' in accept_types:
-            pass
-        elif 'text/html' in accept_types:
-            self.render('home.html', content1 = content, content2 = '', logged_user = self.current_user)
 
 class DojoPageHandler(BaseHandler):
 
@@ -244,8 +185,8 @@ class TwitterHandler(BaseHandler, tornado.auth.TwitterMixin):
 class DojoTo(tornado.web.Application):
     def __init__(self, options):
         handlers = [
-            (r"/", HomeHandler),
-            (r"/timeline", TimelineHandler),
+            (r"/", dojo.site.HomeHandler),
+            (r"/timeline", dojo.site.TimelineHandler),
             (r"/learn/([A-Za-z_]+)", DojoPageHandler),
             (r"/learn/([A-Za-z_]+)/in/([A-Za-z_]+)", DojoPageHandler),
 
