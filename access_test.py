@@ -6,7 +6,7 @@ from urllib import urlencode
 from tornado.testing import AsyncHTTPTestCase
 from tornado.web import Application
 from tornado.options import parse_config_file, parse_command_line, options
-from dojo_to import DojoTo
+from dojoapp import DojoApp
 from tornado import database
 
 from testutils import init_db, drop_db
@@ -22,7 +22,7 @@ init_db()
 class AccessTest(AsyncHTTPTestCase):
 
     def get_app(self):
-        return DojoTo(options)
+        return DojoApp(options)
 
     def test_homepage(self):
         response = self.fetch('/')

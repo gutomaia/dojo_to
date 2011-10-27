@@ -78,7 +78,7 @@ class SocialApiHandler(BaseHandler):
     def _on_comments(self):
         pass
 
-class DojoTo(tornado.web.Application):
+class DojoApp(tornado.web.Application):
     def __init__(self, options):
         handlers = [
             (r"/", dojo.site.Home),
@@ -120,7 +120,7 @@ if __name__ == "__main__":
     #logging.info("starting dojo to server") 
     tornado.options.parse_command_line()
     tornado.options.parse_config_file(os.getenv("HOME") + "/.dojo_to.conf")
-    DojoTo(options).listen(options.port)
+    DojoApp(options).listen(options.port)
 
     try:
         tornado.ioloop.IOLoop.instance().start()

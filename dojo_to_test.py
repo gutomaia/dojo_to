@@ -5,7 +5,7 @@ from urllib import urlencode
 
 from tornado.testing import AsyncHTTPTestCase
 from tornado.options import parse_config_file, parse_command_line, options
-from dojo_to import DojoTo
+from dojoapp import DojoApp
 from tornado import database
 from tornado.escape import json_encode, json_decode
 
@@ -38,7 +38,7 @@ class DojoToHttpTest(AsyncHTTPTestCase):
         super(DojoToHttpTest, self).tearDown()
 
     def get_app(self):
-        app = DojoTo(options)
+        app = DojoApp(options)
         self.mox.StubOutWithMock(DojoApiHandler, 'get_current_user', use_mock_anything=True)
         self.logged_user = dict(
             id = 1,
@@ -116,7 +116,7 @@ class ParticipantApiTest(AsyncHTTPTestCase):
         super(ParticipantApiTest, self).tearDown()
 
     def get_app(self):
-        app = DojoTo(options)
+        app = DojoApp(options)
         self.mox.StubOutWithMock(ParticipantApiHandler, 'get_current_user', use_mock_anything=True)
         self.logged_user = dict(
             id = 1,
