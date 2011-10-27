@@ -44,3 +44,14 @@ class Timeline(BaseHandler):
             self.render('home.html', content1 = content, content2 = '', logged_user = self.current_user)
 
 
+class Dojo(BaseHandler):
+
+    def get(self, language=None, city=None):
+        content = language
+        accept_types = self.get_accept_types()
+        if 'ajax/html' in accept_types:
+            self.write(content)
+        elif 'application/json' in accept_types:
+            pass
+        elif 'text/html' in accept_types:
+            self.render('home.html', content1 = content, content2 = '', logged_user = self.current_user)

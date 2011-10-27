@@ -43,19 +43,6 @@ define("twitter_callback", help="your twitter callback", default=None)
 define("github_client_id", help="your Github application client id")
 define("github_secret", help="your Github application secret")
 
-
-class DojoPageHandler(BaseHandler):
-
-    def get(self, language=None, city=None):
-        content = language
-        accept_types = self.get_accept_types()
-        if 'ajax/html' in accept_types:
-            self.write(content)
-        elif 'application/json' in accept_types:
-            pass
-        elif 'text/html' in accept_types:
-            self.render('home.html', content1 = content, content2 = '', logged_user = self.current_user)
-
 class CrudDojoHandler(BaseHandler):
 
     @tornado.web.authenticated
@@ -187,8 +174,8 @@ class DojoTo(tornado.web.Application):
         handlers = [
             (r"/", dojo.site.Home),
             (r"/timeline", dojo.site.Timeline),
-            (r"/learn/([A-Za-z_]+)", DojoPageHandler),
-            (r"/learn/([A-Za-z_]+)/in/([A-Za-z_]+)", DojoPageHandler),
+            (r"/learn/([A-Za-z_]+)", dojo.site.Dojo),
+            (r"/learn/([A-Za-z_]+)/in/([A-Za-z_]+)", dojo.site.Dojo),
 
             (r"/dojo/([0-9]+)", dojo.api.DojoApiHandler),
             (r"/dojo/([0-9]+)/join", dojo.api.ParticipantApiHandler),
