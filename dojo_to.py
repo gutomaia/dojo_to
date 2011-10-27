@@ -185,8 +185,8 @@ class TwitterHandler(BaseHandler, tornado.auth.TwitterMixin):
 class DojoTo(tornado.web.Application):
     def __init__(self, options):
         handlers = [
-            (r"/", dojo.site.HomeHandler),
-            (r"/timeline", dojo.site.TimelineHandler),
+            (r"/", dojo.site.Home),
+            (r"/timeline", dojo.site.Timeline),
             (r"/learn/([A-Za-z_]+)", DojoPageHandler),
             (r"/learn/([A-Za-z_]+)/in/([A-Za-z_]+)", DojoPageHandler),
 

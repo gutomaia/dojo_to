@@ -2,7 +2,7 @@
 
 from common import BaseHandler
 
-class HomeHandler(BaseHandler):
+class Home(BaseHandler):
     def get(self):
         if self.get_argument('_escaped_fragment_', False):
             self.redirect(self.get_argument('_escaped_fragment_'))
@@ -10,7 +10,7 @@ class HomeHandler(BaseHandler):
         self.render('home.html', content1 = '', content2 = '', logged_user = self.current_user)
 
 
-class TimelineHandler(BaseHandler):
+class Timeline(BaseHandler):
 
     def get(self, type = 'public'):
         db = self.get_database()
