@@ -2,7 +2,7 @@ INSERT INTO users (username, twitter_display_icon, twitter_id) values ('gutomaia
 INSERT INTO users (username, twitter_id) values ('thiagoalz', 2);
 INSERT INTO users (username, twitter_id) values ('gabriel.ozeas', 3);
 
-INSERT INTO dojos (user_id, language, location, address, city, date_hour) values (1, 'python', 'Google', 'a','São Paulo', now());
+INSERT INTO dojos (user_id, language, location, address, city, date_hour) values (1, 'python', 'Google', 'Av. Brigadeiro Faria Lima, 3900, 5th floor, Itaim Sao Paulo','São Paulo', now());
 INSERT INTO dojos (user_id, language, location, address, city, date_hour) values (1, 'php', 'SetTech', 'b','Salvador', now());
 INSERT INTO dojos (user_id, language, location, address, city, date_hour) values (1, 'java', 'Ruy Barbosa', 'c', 'Salvador', now());
 

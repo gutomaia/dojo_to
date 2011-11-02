@@ -41,7 +41,7 @@ CREATE TABLE `dojos` (
 	`language` varchar(10) NULL,
 	`github_repo` varchar(10) NULL,
 	`location` varchar(20) NOT NULL,
-    `address` varchar(30) NOT NULL,
+    `address` varchar(80) NOT NULL,
     `city` varchar(20) NOT NULL,
     `date_hour` DATETIME NULL,
     `slots` int(2) NULL,
