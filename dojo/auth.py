@@ -4,7 +4,7 @@ from common import BaseHandler
 
 import tornado.web
 import tornado.auth
-
+from tornado.escape import json_encode
 
 class TwitterHandler(BaseHandler, tornado.auth.TwitterMixin):
 
@@ -18,6 +18,7 @@ class TwitterHandler(BaseHandler, tornado.auth.TwitterMixin):
     def _on_auth(self, user):
         if not user: raise tornado.web.HTTPError(500, "Twitter auth failed")
         logged_user = self.register(user)
+        #TODO self._log_access();
         query = ("INSERT INTO twitterlogins (" +
             "user_id, username, twitter_id," +
             "protected, following, " +
