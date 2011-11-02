@@ -12,12 +12,37 @@ from tornado.escape import json_encode, json_decode
 from testutils import init_db, drop_db
 import mox
 
+from dojo.common import BaseHandler
+
 from dojo.api import DojoApiHandler, ParticipantApiHandler
 
 APP_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '.'))
 sys.path.append(os.path.join(APP_ROOT, '.'))
 
 parse_config_file(os.getenv("HOME") + "/.dojo_to.conf")
+
+class BaseTest(unittest.TestCase):
+    def setUp(self):
+        self.mox = mox.Mox()
+        super(BaseTest, self).setUp()
+
+    def tearDown(self):
+        self.mox.UnsetStubs()
+        self.mox.ResetAll()
+        super(BaseTest, self).tearDown()
+
+    def test_get_current_user_with_a_user_logged(self):
+        self.mox.StubOutWithMock(BaseHandler, 'get_cookie', use_mock_anything=True)
+        self.mox.StubOutWithMock(BaseHandler, 'get_secure_cookie', use_mock_anything=True)
+        BaseHandler.get_cookie('user').AndReturn('lot of stuff')
+        BaseHandler.get_secure_cookie('user').AndReturn('ok')
+        self.mox.ReplayAll()
+        #base = BaseHandler(None,None)
+        #base.get_current_user();
+        
+
+
+
 
 class DojoToTest(unittest.TestCase):
 
@@ -50,13 +75,24 @@ class DojoToHttpTest(AsyncHTTPTestCase):
         return app
 
     def test_create_a_dojo_with_a_simple_post(self):
+        '''
+        Create a dojo using a simple post, this api will be used
+        on forms from the page, when the user hasn't javascript enabled.
+
+        TODO: date_hour must be passed somehow!?
+        TODO: if they are separated fields?!? The server code must catch
+        with GMT user is and make the correct conversion!
+
+        How to render it to a microformat?!
+
+        '''
         DojoApiHandler.get_current_user().AndReturn(self.logged_user)
         DojoApiHandler.get_current_user().AndReturn(self.logged_user)
         self.mox.ReplayAll()
         expected = dict(
             language = "python",
             location = 'GruPy HeadQuarters',
-            address = 'asdf',
+            address = 'Rua A Ser definida mas com varios caracteres, 42, Bairro',
             city = 'São Paulo',
             date_hour = 'Sex Out 21 18:40:23 BRST 2011'
         )
@@ -74,6 +110,25 @@ class DojoToHttpTest(AsyncHTTPTestCase):
         self.assertEquals(expected['city'], actual['city'])
         db.close()
         self.mox.VerifyAll()
+
+
+    
+    def test_timestamp_conversion(self):
+        '''
+        Av. Brigadeiro Faria Lima nº 3900 5th floor, Itaim Sao Paulo
+        If user is in GMT -3 and at 21hrs from january 1 he set sometihng,
+        then the record on the database must be at 00:00 on january 2.
+        '''
+        pass
+    
+    def test_timestamp_format(self):
+        '''
+        If a timestamp catched from the database on a specific hour
+        on a GMT-0
+        must be formated as 2011-10-27T19:00-02:0000
+        on GMT-2
+        '''
+        pass
         
     def test_create_a_dojo_from_a_json(self):
         DojoApiHandler.get_current_user().AndReturn(self.logged_user)
