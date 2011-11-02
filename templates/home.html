@@ -92,29 +92,36 @@
 <script type="text/javascript">
 
 	function ajaxCallback (content, headers, context, xhr){
-		var div = document.getElementById(context);
+		var container = 'container'+context.container;
+		var div = document.getElementById(container);
 		div.innerHTML = linker(content);
 	};
 
 	Path.map("#!/dojo/:id").to(function(){
 		var id = this.params["id"];
 		var context = {'container':2};
-		ajax.callServer('/dojo/'+id, ajaxCallback, 'container2', 'GET', null, null, {'Accept':'ajax/html'});
+		ajax.callServer('/dojo/'+id, ajaxCallback, context, 'GET', null, null, {'Accept':'ajax/html'});
 	});
 
 	Path.map("#!/learn/:language").to(function(){
 		var language = this.params["language"];
-		ajax.callServer('/learn/'+language, ajaxCallback, 'container2', 'GET', null, null, {'Accept':'ajax/html'});
+		var context = {'container':2};
+		ajax.callServer('/learn/'+language, ajaxCallback, context, 'GET', null, null, {'Accept':'ajax/html'});
 	});
 
 	Path.map("#!/timeline").to(function(){
-		ajax.callServer('/timeline', ajaxCallback, 'container1', 'GET', null, null, {'Accept':'ajax/html'});
+		var context = {'container':2};
+		ajax.callServer('/timeline', ajaxCallback, context, 'GET', null, null, {'Accept':'ajax/html'});
 	});
 
 	Path.listen();
 
 	if (location.pathname == '/' && location.hash == "") {
-		ajax.callServer('/timeline', ajaxCallback, 'container1', 'GET', null, null, {'Accept':'ajax/html'});
+		var context1 = {'container':1};
+		ajax.callServer('/timeline', ajaxCallback, context1, 'GET', null, null, {'Accept':'ajax/html'});
+		var context2 = {'container':2};
+		ajax.callServer('/dojos', ajaxCallback, context2, 'GET', null, null, {'Accept':'ajax/html'});
+
 	};
 
 	function getCookie(name) {
@@ -131,9 +138,6 @@
 	function isUserLogged(){
 		return (getCookie('user') != null);
 	};
-
-
-
 </script>
 </body>
 </html>

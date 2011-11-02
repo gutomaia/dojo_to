@@ -45,8 +45,14 @@ class Dojos(BaseHandler):
     def get(self):
         db = self.get_database()
         dojos = db.query("SELECT * FROM dojos")
+        accept_types = self.get_accept_types()
         content = self.render_string("dojos.html", dojos = dojos)
-        self.render('home.html', content1 = content, content2='', logged_user = self.current_user)
+        if 'ajax/html' in accept_types or self.get_argument('_framed', False):
+            self.write(content)
+        elif 'application/json' in accept_types:
+            pass
+        elif 'text/html' in accept_types:
+            self.render('home.html', content1 = content, content2 = '', logged_user = self.current_user)
 
 class Dojo(BaseHandler):
 
