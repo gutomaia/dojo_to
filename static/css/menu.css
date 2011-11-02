@@ -34,7 +34,7 @@ ul.menu li.list {
 float:left;
 width:250px;
 margin:-32767px -125px 0px 0px;
-background:url(images/top1.png) no-repeat left bottom;
+background:no-repeat left bottom;
 }
 
 ul.menu li.list a.category {
@@ -51,7 +51,6 @@ ul.menu li.list a.category:hover,
 ul.menu li.list a.category:focus,
 ul.menu li.list a.category:active {
 margin-right:1px;
-background-image:url(images/tophover1.png);
 background-repeat:no-repeat;
 background-position:left top;
 }
@@ -61,7 +60,6 @@ float:left;
 padding:25px 0px 0px 0px; 
 margin:0; 
 list-style:none; 
-background-image:url(images/tophover1.png);
 background-repeat:no-repeat;
 background-position:left top;
 margin:-25px 0px 0px 0px;
@@ -75,13 +73,11 @@ clear:left;
 }
 
 ul.submenu li a.endlist {
-background:url(images/bottom1.png);
 }
  
 ul.submenu li a.endlist:hover,
 ul.submenu li a.endlist:focus,
 ul.submenu li a.endlist:active {
-background:url(images/bottomhover1.png);
 }
  
 ul.submenu a:hover,
