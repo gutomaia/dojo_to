@@ -43,8 +43,10 @@ class DojoApp(tornado.web.Application):
         handlers = [
             (r"/", dojo.site.Home),
             (r"/timeline", dojo.site.Timeline),
+            (r"/dojos", dojo.site.Dojos),
             (r"/learn/([A-Za-z_]+)", dojo.site.Dojo),
             (r"/learn/([A-Za-z_]+)/in/([A-Za-z_]+)", dojo.site.Dojo),
+            (r"/user/([A-Za-z0-9]+)", dojo.site.User),
 
             (r"/dojo/([0-9]+)", dojo.api.DojoApiHandler),
             (r"/dojo/([0-9]+)/join", dojo.api.ParticipantApiHandler),
@@ -54,6 +56,7 @@ class DojoApp(tornado.web.Application):
             (r"/logout", dojo.auth.LogoutHandler),
             (r"/api/dojo/?([0-9]+)?", dojo.api.DojoApiHandler),
             (r"/api/dojo/([0-9]+)/join", dojo.api.ParticipantApiHandler),
+            
 
         ]
         settings = dict (
