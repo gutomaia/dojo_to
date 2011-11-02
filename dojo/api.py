@@ -5,7 +5,9 @@ from common import BaseHandler
 import tornado.web
 import tornado.auth
 from tornado.escape import json_encode, json_decode
+import tornado.database
 
+from _mysql_exceptions import DataError
 
 class DojoApiHandler(BaseHandler):
     
@@ -47,7 +49,7 @@ class DojoApiHandler(BaseHandler):
             )
             db.close()
             return dojo_id
-        except ProgrammingError:
+        except DataError:
             pass
 
     def get(self, id): #restore
@@ -56,6 +58,7 @@ class DojoApiHandler(BaseHandler):
         )
         db = self.get_database()
         dojo = db.get(query, id)
+        if not dojo: raise tornado.web.HTTPError(404, "Dojo not found")
         participants = None
         accept_types = self.get_accept_types()
         content = self.render_string('dojo.html', logged_user = self.get_current_user(), dojo = dojo)
@@ -86,7 +89,7 @@ class ParticipantApiHandler(BaseHandler):
             #TODO: if dojo event time > 12 horas confimed = False
             participant = dict (
                 user_id = self.get_current_user()['id'],
-                dojo_id = self.get_argument('dojo_id'),
+                dojo_id = id,
                 confirmed = False,
             )
             self.create(participant)
@@ -129,9 +132,14 @@ class SocialApiHandler(BaseHandler):
     def get(self, url):
         if url == 'friends':
             #if user has twitter
+            db = self.get_database()
+            #TODO callback database
+            private = db.get("SELECT * FROM users WHERE id=%s", self.current_user['id'])
             self.twitter_request("/followers/ids", 
-                access_token= user["access_token"],
+                access_token= private["access_token"],
                 callback= self.async_callback(self._on_twitter_friends))
+            db.close()
+            return
             #if user has facebook
         if url == 'comments':
             #self.twitter.r search twitter by dojo_id
@@ -139,9 +147,24 @@ class SocialApiHandler(BaseHandler):
         
         self.write('ok')
         
-    def _on_twitter_friends(self): 
-        query = "select username, twitter_display_icon  from users where twitter_id in (2,3) order by username"
-        pass
+    def _on_twitter_friends(self, followers_ids): 
+        db = self.getdatabase()
+        ids = ','.join(map(str,followers_ids))
+        sql = "SELECT username, twitter_display_icon FROM users WHERE twitter_id IN (%s) ORDER BY username"
+        db.query(query)
+        db.close()
+        self.finish()
 
     def _on_comments(self):
+        pass
+
+    @tornado.web.asynchronous
+    def post(self, url):
+        if url == 'twit':
+            self.twitter_request("status/update", 
+                status = "aee",
+                access_token= private['access_token'],
+                callback = self.async_callback(self._on_twit))
+
+    def _on_twit(self, response):
         pass
