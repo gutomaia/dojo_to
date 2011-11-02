@@ -112,31 +112,6 @@ padding:7px 0 0 20px;
 display:inline;
 }
 
-.top .menu {
-float:right;
-}
-
-.top .menu li {
-display:inline;
-height: 45px;
-text-align: center;
-list-style:none;
-}
-
-.top .menu li a{
-padding: 15px 18px 15px 18px;
-font-size:14px;
-color:#999999;
-text-shadow: 0px 1px 0px #333;
-line-height:20px;
-}
-
-.top .menu li a:hover{
-color:#FFFFFF;
-background-color:#333;
-text-decoration:none;
-}
-
 .content {
 background-color:#FFF;
 background-image: -moz-linear-gradient(top, #FFFFFF, #e2e2e2);
