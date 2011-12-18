@@ -34,7 +34,7 @@ class Timeline(BaseHandler):
         db.close()
         accept_types = self.get_accept_types()
         content = self.render_string('timeline.html', participants = participants, logged_user = self.current_user)
-        if 'ajax/html' in accept_types or self.get_argument('_framed', False):
+        if 'ajax/html' in accept_types or self.get_argument('_framed', False) or self.is_xml_http_request():
             self.write(content)
         elif 'application/json' in accept_types:
             pass
@@ -47,7 +47,7 @@ class Dojos(BaseHandler):
         dojos = db.query("SELECT * FROM dojos")
         accept_types = self.get_accept_types()
         content = self.render_string("dojos.html", dojos = dojos)
-        if 'ajax/html' in accept_types or self.get_argument('_framed', False):
+        if 'ajax/html' in accept_types or self.get_argument('_framed', False) or self.is_xml_http_request():
             self.write(content)
         elif 'application/json' in accept_types:
             pass
@@ -59,7 +59,7 @@ class Dojo(BaseHandler):
     def get(self, language=None, city=None):
         content = language
         accept_types = self.get_accept_types()
-        if 'ajax/html' in accept_types:
+        if 'ajax/html' in accept_types or self.is_xml_http_request():
             self.write(content)
         elif 'application/json' in accept_types:
             pass
