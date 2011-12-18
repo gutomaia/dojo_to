@@ -15,7 +15,7 @@ class BaseHandler(tornado.web.RequestHandler):
             self.settings['database_password']
         )
         return db
-
+    
     def get_current_user(self):
         if self.get_cookie('user'): #TODO check for a non-secure-cookie
             return json_decode(self.get_secure_cookie('user'))
@@ -30,3 +30,10 @@ class BaseHandler(tornado.web.RequestHandler):
             return self.request.headers['Accept'].split(',')
         else:
             return ['text/html']
+
+    def is_xml_http_request(self):
+        xhr = self.request.headers.get('X-Requested-With')
+        return xhr == 'XMLHttpRequest'
+
+    def get_user_agent(self):
+        return self.request.headers["User-Agent"]

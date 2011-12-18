@@ -10,6 +10,8 @@
 		<title>Dojo to</title>
 		<link type="text/css" rel="stylesheet" href="/static/css/grid_desktop.css" media='screen and (min-width: 960px)' />
 		<link type="text/css" rel="stylesheet" href="/static/css/menu.css" media='screen and (min-width: 960px)' />
+		<link type="text/css" rel="stylesheet" href="/static/css/jsDatePick_ltr.css" />
+
 
 		<link type="text/css" rel="stylesheet" href="/static/css/style.css" media="screen" />
 		<link href="http://fonts.googleapis.com/css?family=Andika" rel="stylesheet" type="text/css" />
@@ -85,22 +87,64 @@
 	</div>
 </div>
 
+<script type="text/javascript" src="/static/js/jsDatePick.full.1.3.js"></script>
 <script type="text/javascript" src="/static/js/dom.js"></script>
 <script type="text/javascript" src="/static/js/ajax.js"></script>
+<script type="text/javascript" src="/static/js/jquery-1.7.1.min.js"></script>
 <script type="text/javascript" src="/static/js/path.js"></script>
 <script type="text/javascript" src="/static/js/linker.js"></script>
 <script type="text/javascript">
+	g_jsDatePickImagePath = "/static/img/";
+
 
 	function ajaxCallback (content, headers, context, xhr){
 		var container = 'container'+context.container;
 		var div = document.getElementById(container);
 		div.innerHTML = linker(content);
+		cal = new JsDatePick({
+			useMode:1,
+			target:"calendar",
+       		isStripped: true,
+		});
+		cal.setOnSelectedDelegate(function(){
+			var obj = cal.getSelectedDay();
+			alert("a date was just selected and the date is : " + obj.day + "/" + obj.month + "/" + obj.year);
+		});
+	};
+
+	function ajaxCallback2 (data, textStatus, jqxhr){
+		var container = 'container'+ this.container;
+		var div = document.getElementById(container);
+		console.log(data);
+		div.innerHTML = linker(data);
+		console.log("foi");
+		/*cal = new JsDatePick({
+			useMode:1,
+			target:"calendar",
+       		isStripped: true,
+		});
+		cal.setOnSelectedDelegate(function(){
+			var obj = cal.getSelectedDay();
+			alert("a date was just selected and the date is : " + obj.day + "/" + obj.month + "/" + obj.year);
+		});
+		*/
 	};
 
 	Path.map("#!/dojo/:id").to(function(){
 		var id = this.params["id"];
-		var context = {'container':2};
-		ajax.callServer('/dojo/'+id, ajaxCallback, context, 'GET', null, null, {'Accept':'ajax/html'});
+		var localcontext = {'container':2};
+		//ajax.callServer('/dojo/'+id, ajaxCallback, context, 'GET', null, null, {'Accept':'ajax/html'});
+		console.log("oi");
+		var dojoUrl = '/dojo/'+id;
+		$.ajax({			
+			accepts: {
+				xml: "text/xml",
+				text: "text/xml"
+			},
+			url: dojoUrl,
+			context: localcontext,
+			success: ajaxCallback2
+			});
 	});
 
 	Path.map("#!/learn/:language").to(function(){
@@ -112,6 +156,11 @@
 	Path.map("#!/timeline").to(function(){
 		var context = {'container':2};
 		ajax.callServer('/timeline', ajaxCallback, context, 'GET', null, null, {'Accept':'ajax/html'});
+	});
+
+	Path.map("#!/start_a_dojo").to(function(){
+		var context = {'container':2};
+		ajax.callServer('/start_a_dojo', ajaxCallback, context, 'GET', null, null, {'Accept':'ajax/html'});
 	});
 
 	Path.listen();
@@ -139,5 +188,21 @@
 		return (getCookie('user') != null);
 	};
 </script>
+
+
+<!-- TODO if not debug -->
+	<script type="text/javascript">
+	    var GoSquared={};
+	    GoSquared.acct = "GSN-200690-G";
+	    (function(w){
+	        function gs(){
+	            w._gstc_lt=+(new Date); var d=document;
+	            var g = d.createElement("script"); g.type = "text/javascript"; g.async = true; g.src = "//d1l6p2sc9645hc.cloudfront.net/tracker.js";
+	            var s = d.getElementsByTagName("script")[0]; s.parentNode.insertBefore(g, s);
+	        }
+	        w.addEventListener?w.addEventListener("load",gs,false):w.attachEvent("onload",gs);
+	    })(window);
+	</script>
+<!-- end -->
 </body>
 </html>

@@ -66,9 +66,9 @@ class DojoApiHandler(BaseHandler):
             self.render('home.html', content1 = content, content2 = None, logged_user = self.current_user)
             return
         elif 'application/json' in accept_types:
-            #self.write(json_encode(dojo))
+            self.write(json_encode(dojo))
             return
-        elif 'ajax/html' in accept_types:
+        elif 'ajax/html' in accept_types or self.is_xml_http_request():
             self.write(content)
             return
 

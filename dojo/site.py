@@ -66,6 +66,17 @@ class Dojo(BaseHandler):
         elif 'text/html' in accept_types:
             self.render('home.html', content1 = content, content2 = '', logged_user = self.current_user)
 
+class StartOne(BaseHandler):
+
+    def get(self):
+        content = self.render_string('start.html')
+        accept_types = self.get_accept_types()
+        if 'ajax/html' in accept_types:
+            self.write(content)
+        elif 'text/html' in accept_types:
+            self.render('home.html', content1 = content, content2 = '', logged_user = self.current_user)            
+
+
 class User(BaseHandler):
 
     def get(self, username):
