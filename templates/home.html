@@ -95,11 +95,8 @@
 	g_jsDatePickImagePath = "/static/img/";
 
 	function ajaxCallback2 (data, textStatus, jqxhr){
-		var container = 'container'+ this.container;
-		var div = document.getElementById(container);
-		console.log(data);
+		var div = $('#container'+ this.container)[0];
 		div.innerHTML = linker(data);
-		console.log("foi");
 		/*cal = new JsDatePick({
 			useMode:1,
 			target:"calendar",
