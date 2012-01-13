@@ -44,6 +44,8 @@ class DojoApp(tornado.web.Application):
             (r"/", dojo.site.Home),
             (r"/timeline", dojo.site.Timeline),
             (r"/dojos", dojo.site.Dojos),
+            (r"/start_a_dojo", dojo.site.StartOne),
+
             (r"/learn/([A-Za-z_]+)", dojo.site.Dojo),
             (r"/learn/([A-Za-z_]+)/in/([A-Za-z_]+)", dojo.site.Dojo),
             (r"/user/([A-Za-z0-9]+)", dojo.site.User),
