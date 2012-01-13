@@ -1,26 +1,34 @@
-<div class="content">
-    <h1>Timeline</h1>
+<div>
+    <h2>Timeline</h2>
     {% if participants %}
 
-        {% if logged_user %}
-        	<ul>
-        		<li><a href="/timeline">Public</a></li>
-        		<li><a href="/timeline/of_friends">Friends</a></li>
-        	</ul>
-        {% end %}
+    {% if logged_user %}
+    <ul class="tabs">
+        <li class="active"><a href="#general">General</a></li>
+        <li><a href="/timeline/of_friends">Friends</a></li>
+        <li><a href="/timeline/near_me">Near You</a></li>
+    </ul>
+    {% end %}
 
-	    <ul class="timeline">
-		{% for participant in participants %}
-	    	<li>
-	    		{% if participant.twitter_display_icon %}
-	    			<img src="{{participant.twitter_display_icon}}" align="left" />
-	    		{% else %}
-	    			<img src="/static/img/none.png" align="left" />
-	    		{% end %}
-				<p><a href="/user/{{participant.username}}">{{ participant.username }}</a> will practice <a href="/learn/{{participant.language}}">{{ participant.language }}</a> at {{participant.location}} in <a href="/go_in/{{ participant.city }}">{{ escape(participant.city) }}</a></p><a href="/dojo/{{ participant.dojo_id }}">more &raquo;</a>
-            </li>
-		{% end %}
-        </ul>
+    <table>
+        <tbody>
+        {% for participant in participants %}
+          <tr>
+            <td>
+            <center>
+                <a href="/user/{{participant.username}}">
+                {% if participant.twitter_display_icon %}
+                    <img class="thumbnail" src="{{participant.twitter_display_icon}}" />
+                {% else %}
+                    <img class="thumbnail" src="/static/img/none.png" />
+                {% end %}
+            </a></center>
+            </td>
+            <td><a href="/user/{{participant.username}}">{{ participant.username }}</a> will practice <a href="/learn/{{participant.language}}">{{ participant.language }}</a> at {{participant.location}} in <a href="/go_in/{{ participant.city }}">{{ escape(participant.city) }}</a>. <a href="">Join him!</a><a href="/dojo/{{ participant.dojo_id }}">more &raquo;</a></td>
+          </tr>
+        {% end %}
+        </tbody>
+    </table>
     {% else %}
         There are no events on the timeline.
     {% end %}
