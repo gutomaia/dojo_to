@@ -1,8 +1,33 @@
-<div class="content">
+<div>
     {% if dojos %}
-        <h1>Next Dojos</h1>
+        <h2>Upcomming Dojos</h2>
+        <table class="zebra-striped">
+            <thead>
+              <tr>
+                <th>What?</th>
+                <th>Where?</th>
+                <th>When?</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for dojo in dojos %}
+              <tr class="vevent">
+                <td><a href="">Python Brasil</a></td>
+                <td class="location">{{ dojo.location}}, {{dojo.city}}</td>
+                <td>
+                    <abbr class="dtstart" title="2011-10-27T19:00-02:0000">Tomorow, 19</abbr> – <abbr class="dtend" title="2011-10-27T22:00-02:00">22pm</abbr>
+                </td>
+              </tr>
+              {% end %}
+            </tbody>
+        </table>
+
+<!--
         <ul>
             {% for dojo in dojos %}
+
+
+
             <li class="vevent">
                 <abbr class="dtstart" title="2011-10-27T19:00-02:0000">Tomorow, 19</abbr> – 
                 <abbr class="dtend" title="2011-10-27T22:00-02:00">22pm</abbr> :  
@@ -16,6 +41,7 @@
             </li>
             {% end %}
         </ul>
+-->
     {% else %}
         Sadly there are no dojos schecdules right now. So stop wiing and
         <a href="/start-a-dojo">Start A Dojo</a>
