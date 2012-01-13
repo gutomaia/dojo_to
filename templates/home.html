@@ -1,191 +1,201 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-	<head>
-		<script>
-			if (location.pathname != '/'){
-				window.location = '/#!' + location.pathname;
-			}
-		</script>
-		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-		<title>Dojo to</title>
-		<link type="text/css" rel="stylesheet" href="/static/css/grid_desktop.css" media='screen and (min-width: 960px)' />
-		<link type="text/css" rel="stylesheet" href="/static/css/menu.css" media='screen and (min-width: 960px)' />
-		<link type="text/css" rel="stylesheet" href="/static/css/jsDatePick_ltr.css" />
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <script>
+      if (location.pathname != '/'){
+          window.location = '/#!' + location.pathname;
+      }
+    </script>
+    <meta charset="utf-8">
+    <title>Dojo to</title>
+    <link href="/static/css/bootstrap.css" rel="stylesheet">
+    <script src="http://maps.google.com/maps/api/js?sensor=false" type="text/javascript"></script>
+    <!--<noscript> -->
+    <!--<meta http-equiv=refresh content="0; URL=/?_dojo_noscript=1" />-->
+    <!--</noscript> -->
+    <style>
+      .tabs {
+        border-bottom: 0px;
+        margin: 0 5px 1px;
+      }
+      .actions {
+        background: transparent;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="topbar">
+      <div class="fill">
+        <div class="container">
+          <a class="brand" href="/">dojo.to</a>
+            <ul class="nav">
+              <li class="active"><a href="/">Home</a></li>
+              <li class="dropdown" data-dropdown="dropdown">
+                <a href="#" class="dropdown-toggle">Dojos</a>
+                <ul class="dropdown-menu">
+                  <li><a href="/learn/php">PHP</a></li>
+                  <li><a href="/learn/java">Java</a></li>
+                  <li><a href="/learn/python">Python</a></li>
+                  <li><a href="/learn/ruby">Ruby</a></li>
+                  <li><a href="/learn/lisp">LISP</a></li>
+                  <li class="divider"></li>
+                  <li><a href="#">More...</a></li>
+                </ul>
+              </li>
+              <li><a href="#">About</a></li>
+            </ul>
+          <div class="pull-right tlogin">
+            {% if logged_user %}
+              <a href="/logout"><span>Logout</span></a>
+            {% else %}
+              <a href="/login/twitter"><img src="/static/img/twitter.png" /></a>
+            {% end %}
+          </div>
+        </div>
+      </div>
+    </div>
 
+    <div class="container">
 
-		<link type="text/css" rel="stylesheet" href="/static/css/style.css" media="screen" />
-		<link href="http://fonts.googleapis.com/css?family=Andika" rel="stylesheet" type="text/css" />
-		<!--<noscript> -->
-		<!--<meta http-equiv=refresh content="0; URL=/?_dojo_noscript=1" />-->
-		<!--</noscript> -->
-	</head>
-<body>
+    <div class="content">
+      <div class="row">
+        <div class="span7" id="container1">{% raw content1 %}</div>
+        <div class="span7" id="container2">{% raw content2 %}</div>
+      </div>
+    </div>
 
-<div class="top">
-	<div class="row">
-		<div class="column grid_4">
-		{% if logged_user %}
-			<a href="/start">start a dojo</a>
-		{% end %}
+  <noscript>
+    <div class="row">
+      <iframe class="column grid_6" id="crapContainer1" src="/timeline?_framed=1">
+        <p>Your browser does not support iframes.</p>
+      </iframe>
+      <div class="column grid_6">
+        <iframe id="crapContainer2">
+        </iframe>
+      </div>
+    </div>
+  </noscript>
 
-		</div>
-		
-		<div class="column grid_6">
-			&nbsp;
-			<div class="mainmenu">
-				<ul class="menu">
-				<li class="list">
-					<a class="category" href="/">Home</a>
-				</li>
-				</ul>
-				<ul class="menu">
-				<li class="list">
-					<a class="category" href="/dojos">Dojos</a>
-					<ul class="submenu">
-						<li><a href="learn/python">Python</a></li>
-						<li><a href="learn/java">Java</a></li>
-						<li><a href="learn/php">PHP</a></li>
-				        <li><a href="learn/ruby">Ruby</a></li>
-				        <li><a href="learn/LISP">LISP</a></li>
-					</ul>
-				</li>
-				</ul>
-			</div>
+  <footer>
+      <p>&copy; 2011 gUTO.nET. All Rights reserved.</p>
+  </footer>
 
-		</div>
-	</div>
-	<div class="column grid_4">
-		{% if logged_user %}
-			<h1>{{ logged_user['username'] }}</h1>
-			<a href="/logout"><span>Logout</span></a>
-		{% else %}
-			<a href="/login/twitter"><span>Login with twitter</span></a>
-		{% end %}
-	</div>
-</div>
+  <script type="text/javascript" src="/static/js/jquery-1.7.1.min.js"></script>
+  <script type="text/javascript" src="/static/js/dropdown.js"></script>
+  <script type="text/javascript" src="/static/js/main.js"></script>
+  <script type="text/javascript" src="/static/js/path.js"></script>
+  <script type="text/javascript" src="/static/js/linker.js"></script>
+  <script type="text/javascript">
+    g_jsDatePickImagePath = "/static/img/";
 
-<noscript>
-	<div class="row">
-			<iframe class="column grid_6" id="crapContainer1" src="/timeline?_framed=1">
-				<p>Your browser does not support iframes.</p>
-			</iframe>
-		<div class="column grid_6">
-			<iframe id="crapContainer2">
-			</iframe>
-		</div>
-	</div>
-</noscript>
+    function ajaxCallback2 (data, textStatus, jqxhr){
+        var div = $('#container'+ this.container)[0];
+        div.innerHTML = linker(data);
+        /*cal = new JsDatePick({
+            useMode:1,
+            target:"calendar",
+            isStripped: true,
+        });
+        cal.setOnSelectedDelegate(function(){
+            var obj = cal.getSelectedDay();
+            alert("a date was just selected and the date is : " + obj.day + "/" + obj.month + "/" + obj.year);
+        });
+        */
+    };
 
-<div class="row">
-	<div id="container1" class="column grid_6">{% raw content1 %}</div>
-	<div id="container2" class="column grid_6">{% raw content2 %}</div>
-</div>
+    Path.map("#!/dojo/:id").to(function(){
+      var id = this.params["id"];
+      $.ajax({
+        url: '/dojo/'+id,
+        context: {'container':2},
+        success: ajaxCallback2
+      });
+    });
 
-<div id="footer" class="row">
-	<div class="column grid_12 footer">
-		<p class="left">&copy;2011 gUTO.nET. All Rights reserved.</p>
-	</div>
-</div>
+    Path.map("#!/learn/:language").to(function(){
+      var language = this.params["language"];
+      $.ajax({
+        url: '/learn/'+language,
+        context: {'container':2},
+        success: ajaxCallback2
+      });
+    });
 
-<script type="text/javascript" src="/static/js/jsDatePick.full.1.3.js"></script>
-<script type="text/javascript" src="/static/js/jquery-1.7.1.min.js"></script>
-<script type="text/javascript" src="/static/js/path.js"></script>
-<script type="text/javascript" src="/static/js/linker.js"></script>
-<script type="text/javascript">
-	g_jsDatePickImagePath = "/static/img/";
+    Path.map("#!/timeline").to(function(){
+      $.ajax({
+        url: '/timeline',
+        context: {'container':2},
+        success: ajaxCallback2
+      });
+    });
 
-	function ajaxCallback2 (data, textStatus, jqxhr){
-		var div = $('#container'+ this.container)[0];
-		div.innerHTML = linker(data);
-		/*cal = new JsDatePick({
-			useMode:1,
-			target:"calendar",
-       		isStripped: true,
-		});
-		cal.setOnSelectedDelegate(function(){
-			var obj = cal.getSelectedDay();
-			alert("a date was just selected and the date is : " + obj.day + "/" + obj.month + "/" + obj.year);
-		});
-		*/
-	};
+    Path.map("#!/start_a_dojo").to(function(){
+      $.ajax({
+        url: '/start_a_dojo',
+        context: {'container':2},
+        success: ajaxCallback2
+      });
+    });
 
-	Path.map("#!/dojo/:id").to(function(){
-		var id = this.params["id"];
-		var localcontext = {'container':2};
-		$.ajax({
-			url: '/dojo/'+id,
-			context: localcontext,
-			success: ajaxCallback2
-			});
-	});
+    Path.listen();
 
-	Path.map("#!/learn/:language").to(function(){
-		var language = this.params["language"];
-		$.ajax({
-			url: '/learn/'+language,
-			context: {'container':2},
-			success: ajaxCallback2
-		});
-	});
+    if (location.pathname == '/' && location.hash == "") {
+        $.ajax({
+            url: '/timeline',
+            context: {'container':1},
+            success: ajaxCallback2
+            });
+        $.ajax({
+            url: '/dojos',
+            context: {'container':2},
+            success: ajaxCallback2
+            });
+    };
 
-	Path.map("#!/timeline").to(function(){
-		$.ajax({
-			url: '/timeline',
-			context: {'container':2},
-			success: ajaxCallback2
-		});
-	});
+    function getCookie(name) {
+        var i,x,y, cookies=document.cookie.split(";");
+        for (i=0;i<cookies.length;i++) {
+            x=cookies[i].substr(0,cookies[i].indexOf("="));
+            y=cookies[i].substr(cookies[i].indexOf("=")+1);
+            x=x.replace(/^\s+|\s+$/g,"");
+            if (x==name) return unescape(y);
+        }
+        return null
+    };
 
-	Path.map("#!/start_a_dojo").to(function(){
-		var context = {'container':2};
-		ajax.callServer('/start_a_dojo', ajaxCallback, context, 'GET', null, null, {'Accept':'ajax/html'});
-	});
+    function set_map_position(elementId, geolocation) {
+      var latlng = new google.maps.LatLng(-34.397, 150.644);
+      var myOptions = {
+        zoom: 13,
+        center: latlng,
+        mapTypeId: google.maps.MapTypeId.ROADMAP
+      }
+      var map = new google.maps.Map(document.getElementById(elementId), myOptions);
+      if (geolocation != null)
+        map.setCenter(geolocation);
+    }
 
-	Path.listen();
-
-	if (location.pathname == '/' && location.hash == "") {
-		$.ajax({			
-			url: '/timeline',
-			context: {'container':1},
-			success: ajaxCallback2
-			});
-		$.ajax({			
-			url: '/dojos',
-			context: {'container':2},
-			success: ajaxCallback2
-			});
-	};
-
-	function getCookie(name) {
-		var i,x,y, cookies=document.cookie.split(";");
-		for (i=0;i<cookies.length;i++) {
-			x=cookies[i].substr(0,cookies[i].indexOf("="));
-			y=cookies[i].substr(cookies[i].indexOf("=")+1);
-			x=x.replace(/^\s+|\s+$/g,"");
-			if (x==name) return unescape(y);
-		}
-		return null
-	};
-
-	function isUserLogged(){
-		return (getCookie('user') != null);
-	};
-</script>
+    function isUserLogged(){
+        return (getCookie('user') != null);
+    };
+  </script>
 
 
 <!-- TODO if not debug -->
-	<script type="text/javascript">
-	    var GoSquared={};
-	    GoSquared.acct = "GSN-200690-G";
-	    (function(w){
-	        function gs(){
-	            w._gstc_lt=+(new Date); var d=document;
-	            var g = d.createElement("script"); g.type = "text/javascript"; g.async = true; g.src = "//d1l6p2sc9645hc.cloudfront.net/tracker.js";
-	            var s = d.getElementsByTagName("script")[0]; s.parentNode.insertBefore(g, s);
-	        }
-	        w.addEventListener?w.addEventListener("load",gs,false):w.attachEvent("onload",gs);
-	    })(window);
-	</script>
+<!--
+    <script type="text/javascript">
+        var GoSquared={};
+        GoSquared.acct = "GSN-200690-G";
+        (function(w){
+            function gs(){
+                w._gstc_lt=+(new Date); var d=document;
+                var g = d.createElement("script"); g.type = "text/javascript"; g.async = true; g.src = "//d1l6p2sc9645hc.cloudfront.net/tracker.js";
+                var s = d.getElementsByTagName("script")[0]; s.parentNode.insertBefore(g, s);
+            }
+            w.addEventListener?w.addEventListener("load",gs,false):w.attachEvent("onload",gs);
+        })(window);
+    </script>
+-->
 <!-- end -->
 </body>
 </html>
